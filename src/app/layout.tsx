@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Footer from "@/components/Footer";
+import ClientNavbar from "@/components/ClientNavbar";
+import Theme from "./Theme/theme";
+import { WixClientContextProvider } from "@/context/wixContext";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,7 +30,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <WixClientContextProvider>
+        <Theme>
+        <ClientNavbar/>
         {children}
+        <Footer/>
+        </Theme>
+        </WixClientContextProvider>
       </body>
     </html>
   );

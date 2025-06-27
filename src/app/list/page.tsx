@@ -1,0 +1,54 @@
+import Filter from '@/components/Filter'
+import ProductList from '@/components/ProductList'
+import { Box, Button, Typography } from '@mui/material'
+import Image from 'next/image'
+import React from 'react'
+
+const ListPage = () => {
+  return (
+    <Box>
+      <Box 
+      sx={{
+        display : {xs : 'none', sm : 'flex'},
+        justifyContent:'space-between',
+        backgroundColor : "#ffe4e6",
+        px : 4,
+        height : 300,
+        position : 'relative',
+        overflow  :'hidden',
+      }}
+      
+      >
+        <Box
+        sx={{
+          width :"66.666%",
+          display : 'flex',
+          flexDirection : 'column',
+          justifyContent : 'center',
+          alignItems:'center',
+          gap: 4
+        }}
+        >
+          <Typography variant='h4' fontFamily='serif' fontWeight={600} textAlign='center'>Grab Upto 50% off on <br/>Selected Products</Typography>
+          <Button variant='contained'
+          sx={{
+            borderRadius : '24px',
+            px : 3,
+            py  : 1.5,
+            backgroundColor : 'black',
+            fontFamily : 'serif'
+          }}>Buy Now</Button>
+        </Box>
+        <Image src='/woman.png' alt='woman' width={300} height={300}   style={{objectFit : 'contain'}}/>
+      </Box>
+      <Filter/>
+      <Typography variant='h4' fontFamily='serif' sx={{
+        px  : '20px',
+        py  :'20px'
+      }}>Shoes For You!</Typography>
+      <ProductList/>
+    </Box>
+  )
+}
+
+export default ListPage
