@@ -1,16 +1,23 @@
 "use client";
-import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material'
+import { Box, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import React from 'react'
 
 const Filter = () => {
 
-    const [type, setType] = React.useState('');
+    const pathname = usePathname();
+    const searchParams = useSearchParams()
+    const {replace} = useRouter()
 
-    const handleTypeChange = (event: SelectChangeEvent) => {
-        setType(event.target.value as string);
-    };
+    const handleFilterChange = (e : React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) =>{
+        const {name, value} = e.target;
+        const params = new URLSearchParams(searchParams)
+        params.set(name, value)
+        replace(`${pathname}?${params.toString()}`)
 
+    }
 
+    
     return (
         <Box sx={{
             mt: 4,
@@ -33,9 +40,9 @@ const Filter = () => {
                         <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
-                            value={type}
-                            label="Type"
-                            onChange={handleTypeChange}
+                            name='type'
+                            label='Type'
+                            onChange={handleFilterChange}
                             sx={{ fontFamily: "serif", borderRadius: "40px" }}
                         >
                             <MenuItem value="physical" sx={{ fontFamily: 'serif' }}>Physical</MenuItem>
@@ -52,7 +59,13 @@ const Filter = () => {
                         borderRadius: "40px",
                     }}
                 >
-                    <TextField id="outlined-basic" label="min price" variant="outlined" fullWidth slotProps={{ input: { sx: { borderRadius: "40px" } } }} />
+                    <TextField 
+                    id="outlined-basic" 
+                    label="min price" 
+                    variant="outlined" 
+                    name='min'
+                    onChange={handleFilterChange}
+                    fullWidth slotProps={{ input: { sx: { borderRadius: "40px" } } }} />
                 </Box>
 
                 <Box
@@ -64,7 +77,13 @@ const Filter = () => {
                         borderRadius: "40px",
                     }}
                 >
-                    <TextField id="outlined-basic" label="max price" variant="outlined" fullWidth slotProps={{ input: { sx: { borderRadius: "40px", fontFamily: "serif" } } }} />
+                    <TextField 
+                    id="outlined-basic" 
+                    label="max price" 
+                    variant="outlined" 
+                    name='max'
+                    onChange={handleFilterChange}
+                    fullWidth slotProps={{ input: { sx: { borderRadius: "40px", fontFamily: "serif" } } }} />
                 </Box>
 
 
@@ -75,6 +94,8 @@ const Filter = () => {
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             label="Size"
+                            name='size'
+                            onChange={handleFilterChange}
 
                             sx={{ fontFamily: "serif", borderRadius: "40px" }}
                         >
@@ -96,6 +117,8 @@ const Filter = () => {
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             label="Color"
+                            name='color'
+                            onChange={handleFilterChange}
 
                             sx={{ fontFamily: "serif", borderRadius: "40px" }}
                         >
@@ -115,6 +138,8 @@ const Filter = () => {
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             label="Category"
+                            name='category'
+                            onChange={handleFilterChange}
 
                             sx={{ fontFamily: "serif", borderRadius: "40px" }}
                         >
@@ -132,6 +157,10 @@ const Filter = () => {
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
                             label="All Filters"
+                            name='allfilter'
+                            onChange={handleFilterChange
+
+                            }
 
                             sx={{ fontFamily: "serif", borderRadius: "40px" }}
                         >
@@ -142,18 +171,20 @@ const Filter = () => {
                 </Box>
                 <Box sx={{ minWidth: 120 }}>
                     <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label" sx={{ fontFamily: 'serif' }}>Sort By</InputLabel>
+                        <InputLabel id="demo-simple-select-label"  sx={{ fontFamily: 'serif' }}>Sort By</InputLabel>
                         <Select
                             labelId="demo-simple-select-label"
-                            id="demo-simple-select"
+                            id=""
                             label="Sort By"
+                            name='sort'
+                            onChange={handleFilterChange}
 
                             sx={{ fontFamily: "serif", borderRadius: "40px" }}
                         >
-                            <MenuItem value="Price (low to high)" >Price (low to high)</MenuItem>
-                            <MenuItem value=">Price (high to low)" >Price (high to low)</MenuItem>
-                            <MenuItem value="Newest" >Newest</MenuItem>
-                            <MenuItem value="Oldest" >Oldest</MenuItem>
+                            <MenuItem value="asc">Price (low to high)</MenuItem>
+                            <MenuItem value="desc price">Price (high to low)</MenuItem>
+                            <MenuItem value="asc lastUpdated" >Newest</MenuItem>
+                            <MenuItem value="desc lastUpdated" >Oldest</MenuItem>
                         </Select>
                     </FormControl>
                 </Box>

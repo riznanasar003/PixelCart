@@ -1,56 +1,12 @@
-import { Box, Card, Typography } from '@mui/material'
+import { wixClientServer } from '@/lib/wixClientServer';
+import { Box, Card, Link, Typography } from '@mui/material'
 import Image from 'next/image';
 import React from 'react'
 
-const CategoryList = () => {
+const CategoryList = async () => {
+  const wixClient  = wixClientServer()
 
-  const products = [
-    {
-      id: 1,
-      image: 'https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg?auto=compress&cs=tinysrgb&w=800',
-      category: 'Men',
-    },
-    {
-      id: 2,
-      image: 'https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg?auto=compress&cs=tinysrgb&w=800',
-      category: 'Men',
-    },
-    {
-      id: 3,
-      image: 'https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg?auto=compress&cs=tinysrgb&w=800',
-      category: 'Women',
-    },
-    {
-      id: 4,
-      image: 'https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg?auto=compress&cs=tinysrgb&w=800',
-      category: 'Women',
-    },
-    {
-      id: 5,
-      image: 'https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg?auto=compress&cs=tinysrgb&w=800',
-      category: 'Kids',
-    },
-    {
-      id: 6,
-      image: 'https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg?auto=compress&cs=tinysrgb&w=800',
-      category: 'Kids',
-    },
-    {
-      id: 7,
-      image: 'https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg?auto=compress&cs=tinysrgb&w=800',
-      category: 'Kids',
-    },
-    {
-      id: 8,
-      image: 'https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg?auto=compress&cs=tinysrgb&w=800',
-      category: 'Kids',
-    },
-    {
-      id: 9,
-      image: 'https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg?auto=compress&cs=tinysrgb&w=800',
-      category: 'Kids',
-    },
-  ];
+  const cats = await wixClient.collections.queryCollections().find();
 
   return (
 
@@ -64,8 +20,12 @@ const CategoryList = () => {
           display: 'none'
         }
       }}>
-        {products.map((Products) => (
-          <Card key={Products.id} sx={{ minWidth: 250, flexShrink: 0 }}>
+        {cats.items.map((item) => (
+          <Link 
+         href={`/list?cat=${item.slug}`}
+          key={item._id}
+          >
+          <Card  sx={{ minWidth: 250, flexShrink: 0 }}>
             <Box
               sx={{
                 position: 'relative',
@@ -74,17 +34,18 @@ const CategoryList = () => {
               }}
             >
               <Image
-                src={Products.image}
-                alt={Products.category}
+                src={item.media?.mainMedia?.image?.url || "/cat.png"}
+                alt=""
                 fill
                 sizes="50%"
                 style={{ objectFit: 'initial', borderRadius: '4px 4px 0 0' }}
               />
             </Box>
             <Typography variant="h6" fontFamily="serif" paddingLeft='8px'>
-              {Products.category}
+              {item.name}
             </Typography>
           </Card>
+          </Link>
         ))}
 
       </Box>

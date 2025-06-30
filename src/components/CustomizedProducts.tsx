@@ -1,110 +1,162 @@
 "use client";
 import { Box, Button, Typography } from '@mui/material'
-import React, { useState } from 'react'
+import { products } from '@wix/stores';
+import React, { useEffect, useState } from 'react'
+import Add from '@/components/Add';
 
-const CustomizedProducts = () => {
+const CustomizedProducts = ({
+  productId,
+  variants,
+  productOptions
+}: {
+  productId: string;
+  variants: products.Variant[];
+  productOptions: products.ProductOption[];
+}) => {
 
-    const [selectedColor, setSelectedColor] = useState('')
-    const [selectedSize, setSelectedSize] = useState('')
+  const [selectedOptions, setSelectedOptions] = useState<{ [key: string]: string }>({})
+  const [selectedVariant, setSelectedVariant] = useState<products.Variant>();
 
-     const colors = [
-    { name: 'Navy Blue', value: '#130f6c', disabled: false },
-    { name: 'Purple', value: '#841d7f', disabled: false },
-    { name: 'Yellow', value: '#eade20', disabled: true },
-  ];
+  useEffect(() => {
+    const variant = variants.find((v => {
+      const variantChoices = v.choices
+      if (!variantChoices) return false;
+      return Object.entries(selectedOptions).every(
+        ([key, value]) => variantChoices[key] === value
+      )
+    }))
+    setSelectedVariant(variant)
 
-  const sizes = [
-    { label: 'Small', disabled: false },
-    { label: 'Medium', disabled: false },
-    { label: 'Large', disabled: true },
-  ];
+  }, [selectedOptions, variants])
+
+
+  const handleOptionSelected = (optionType: string, choice: string) => {
+    setSelectedOptions(prev => ({ ...prev, [optionType]: choice }))
+  }
+
+  const isVariantInStock = (choices: { [key: string]: string }) => {
+    return variants.some((variant) => {
+      const variantChoices = variant.choices
+
+      if (!variantChoices) return false
+
+      return Object.entries(choices).every(
+        ([key, value]) => variantChoices[key] === value
+      ) && variant.stock?.inStock
+    })
+
+  }
+
 
 
   return (
     <>
-    <Box mt={3}>
-     
-      <Typography fontWeight="bold" gutterBottom>
-        Choose a color
-      </Typography>
-      <Box display="flex" gap={2}>
-        {colors.map((color) => (
-          <Box
-            key={color.name}
-            sx={{
-              width: 32,
-              height: 32,
-              borderRadius: '50%',
-              backgroundColor: color.value,
-              border: '1px solid #ccc',
-              cursor: color.disabled ? 'not-allowed' : 'pointer',
-              position: 'relative',
-              opacity: color.disabled ? 0.4 : 1,
-            }}
-            onClick={() => !color.disabled && setSelectedColor(color.name)}
-          >
-            {selectedColor === color.name && !color.disabled && (
-              <Box
-                sx={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  width: 40,
-                  height: 40,
-                  borderRadius: '50%',
-                  border: '2px solid black',
-                  transform: 'translate(-50%, -50%)',
-                }}
-              />
-            )}
-            {color.disabled && (
-              <Box
-                sx={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: '50%',
-                  width: 43,
-                  height: '2px',
-                  backgroundColor: 'red',
-                  transform: 'translate(-50%, -50%) rotate(45deg)',
-                }}
-              />
-            )}
+      <Box mt={3} display="flex" flexDirection="column" gap={4}>
+        {productOptions.map((option) => (
+          <Box key={option.name}>
+            <Typography fontWeight="bold" gutterBottom>
+              Choose a {option.name}
+            </Typography>
+
+            <Box component="ul" display="flex" gap={2} p={0} m={0} sx={{ listStyle: "none" }}>
+              {option.choices?.map((choice) => {
+                const disabled = !isVariantInStock({
+                  ...selectedOptions,
+                  [option.name!]: choice.description!,
+                });
+
+                const selected = selectedOptions[option.name!] === choice.description;
+
+                const clickHandler = disabled
+                  ? undefined
+                  : () => handleOptionSelected(option.name!, choice.description!);
+
+                return option.name === "Color" ? (
+                  <Box
+                    component="li"
+                    sx={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: "50%",
+                      border: "1px solid #d1d5db",
+                      position: "relative",
+
+                    }}
+                    style={{
+                      cursor: disabled ? "not-allowed" : "pointer",
+                      backgroundColor: choice.value,
+                    }}
+                    onClick={clickHandler}
+                    key={choice.description}
+                  >
+                    {selected && (
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          top: "50%",
+                          left: "50%",
+                          width: 40,
+                          height: 40,
+                          borderRadius: "50%",
+                          border: "2px solid black",
+                          transform: "translate(-50%, -50%)",
+                        }}
+                      />
+                    )}
+                    {disabled && (
+                      <Box
+                        sx={{
+                          position: "absolute",
+                          top: "50%",
+                          left: "50%",
+                          width: 40,
+                          height: "2px",
+                          backgroundColor: "#f87171",
+                          transform: "translate(-50%, -50%) rotate(45deg)",
+                        }}
+
+                      />
+                    )}
+                  </Box>
+                ) : (
+                  <Box component="li">
+                    <Button
+                      sx={{
+                        textTransform: "none",
+                        py: 0.5,
+                        px: 2,
+                        fontSize: "0.875rem",
+                        borderRadius: "999px",
+                        
+                      }}
+                      style={{
+                    cursor: disabled ? "not-allowed" : "pointer",
+                    backgroundColor: selected
+                      ? "#000000"
+                      : disabled
+                      ? "#d1d5db"
+                      : "white",
+                    color: selected || disabled ? "white" : "#000000",
+                    boxShadow: disabled ? "none" : "",
+                   
+                    
+                  }}
+                      key={choice.description}
+                      onClick={clickHandler}
+                    >
+                      {choice.description}
+                    </Button>
+                  </Box>
+                );
+              })}
+            </Box>
           </Box>
         ))}
+         <Add productId={productId} variantId={selectedVariant?._id || "00000000-0000-0000-0000-000000000000"} stockNumber={selectedVariant?.stock?.quantity || 0} />
       </Box>
-      <Typography fontWeight=" bold" gutterBottom mt={3}>
-        Choose a size
-      </Typography>
-      <Box display="flex" gap={2} flexWrap="wrap">
-        {sizes.map((size) => (
-          <Button
-            key={size.label}
-            variant={
-              selectedSize === size.label && !size.disabled ? 'contained' : 'outlined'
-            }
-            disabled={size.disabled}
-            onClick={() => !size.disabled && setSelectedSize(size.label)}
-            sx={{
-              textTransform: 'none',
-              py: 0.5,
-              px: 2,
-              borderRadius: "240px",
-              fontSize: '0.875rem',
-              ...(size.disabled && {
-                backgroundColor: '',
-                color: '#fff',
-
-              }),
-            }}
-          >
-            {size.label}
-          </Button>
-        ))}
-      </Box>
-    </Box>
     </>
-  )
+  );
+
 }
 
 export default CustomizedProducts

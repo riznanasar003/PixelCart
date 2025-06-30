@@ -2,10 +2,26 @@
 import Add from '@/components/Add';
 import CustomizedProducts from '@/components/CustomizedProducts';
 import ProductImage from '@/components/ProductImage';
+import { wixClientServer } from '@/lib/wixClientServer';
 import { Box, Divider, Typography } from '@mui/material';
+import { notFound } from 'next/navigation';
 import React from 'react';
 
-const SinglePage = () => {
+const SinglePage = async ({ params }: { params: { slug: string } }) => {
+  console.log(params.slug)
+  const wixClient = await wixClientServer();
+  const products = await wixClient.products
+    .queryProducts()
+    .eq("slug", params.slug)
+    .find();
+
+  if (!products.items[0]) {
+    return notFound()
+  }
+
+  const product = products.items[0]
+  console.log(product.productOptions)
+
   return (
     <Box
       sx={{
@@ -19,12 +35,12 @@ const SinglePage = () => {
     >
 
       <Box sx={{ width: '100%', maxWidth: 450, maxheight: 250 }}>
-        <ProductImage />
+        <ProductImage items={product.media?.items} />
       </Box>
 
       <Box flex="1" minWidth={300}>
         <Typography variant="h4" fontWeight="bold" gutterBottom>
-          Product Name
+          {product.name}
         </Typography>
 
         <Typography
@@ -32,43 +48,54 @@ const SinglePage = () => {
           color="text.secondary"
           sx={{ textAlign: 'justify', mb: 3 }}
         >
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industrys standard dummy text
-          ever since the 1500s.
+          {product.description}
         </Typography>
 
 
         <Divider sx={{ my: 2, borderBottomWidth: 1 }} />
 
-        <Box display="flex" gap={6} alignItems="center">
-          <Typography
-            variant="h6"
-            sx={{ textDecoration: 'line-through', color: 'gray' }}
-          >
-            $ 78
-          </Typography>
-          <Typography variant="h6" fontWeight="bold">
-            $ 58
-          </Typography>
+        <Box display="flex" gap={2} alignItems="center">
+          {product.price?.price === product.price?.discountedPrice ? (
+            <Typography variant="h6" fontWeight="medium">
+              $ {product.price?.price}
+            </Typography>
+          ) : (
+            <>
+              <Typography
+                variant="h6"
+                sx={{ textDecoration: 'line-through', color: 'gray' }}
+              >
+                $ {product.price?.price}
+              </Typography>
+              <Typography variant="h6" fontWeight="bold">
+                $ {product.price?.discountedPrice}
+              </Typography>
+            </>
+          )}
         </Box>
+
 
 
         <Divider sx={{ my: 2, borderBottomWidth: 1 }} />
         <Box>
-          <CustomizedProducts />
-        </Box>
+          {product.variants && product.productOptions ? (
+          <CustomizedProducts productId={product._id!} variants={product.variants} productOptions={product.productOptions} />
+          ) : (
+
         <Box sx={{ mt: 2 }}>
-          <Add />
+          <Add productId ={product._id} variantId = "00000000-0000-0000-0000-000000000000" stockNumber={product.stock?.quantity || 0} />
         </Box>
-        <Box>
+           )}
+             </Box>
+        {product.additionalInfoSections?.map((section:any)=>(
+          <Box key={section.title}>
           <Divider sx={{ my: 2 }} />
-          <Typography variant='h6' sx={{ fontWeight: "bold" }}>Title</Typography>
-          <Typography variant='subtitle2' sx={{ textAlign: "justify" }}>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which dont look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isnt anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.</Typography>
-          <Divider sx={{ my: 2 }} />
-          <Typography variant='h6' sx={{ fontWeight: "bold" }}>Title</Typography>
-          <Typography variant='subtitle2' sx={{ textAlign: "justify" }}>There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which dont look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isnt anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.</Typography>
-          <Divider sx={{ my: 2 }} />
+          <Typography variant='h6' sx={{ fontWeight: "bold" }}>{section.title}</Typography>
+          <Typography variant='subtitle2' sx={{ textAlign: "justify" }}>{section.description}</Typography>
+          
         </Box>
+      ))
+      }
       </Box>
     </Box>
   );

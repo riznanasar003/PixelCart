@@ -1,10 +1,15 @@
 import Filter from '@/components/Filter'
 import ProductList from '@/components/ProductList'
+import { wixClientServer } from '@/lib/wixClientServer'
 import { Box, Button, Typography } from '@mui/material'
 import Image from 'next/image'
-import React from 'react'
+import React, { Suspense } from 'react'
 
-const ListPage = () => {
+const ListPage = async ({ searchParams }: { searchParams: { [key: string]: string | undefined } }) => {
+  const catSlug = searchParams?.cat || "all-products";
+
+  const wixClient = await wixClientServer();
+  const cat = await wixClient.collections.getCollectionBySlug(catSlug);
   return (
     <Box>
       <Box 
@@ -45,8 +50,11 @@ const ListPage = () => {
       <Typography variant='h4' fontFamily='serif' sx={{
         px  : '20px',
         py  :'20px'
-      }}>Shoes For You!</Typography>
-      <ProductList/>
+      }}>{cat?.collection?.name} For You !</Typography>
+      <Suspense fallback={"loading..."}>
+      <ProductList categoryId={cat.collection?._id || "00000000-000000-000000-000000000001"} 
+      searchParams={searchParams}/>
+      </Suspense>
     </Box>
   )
 }

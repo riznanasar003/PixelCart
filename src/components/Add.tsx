@@ -2,7 +2,11 @@
 import { Box, Button, ButtonGroup, Typography } from '@mui/material'
 import { useState } from 'react'
 
-const Add = () => {
+const Add = ({productId, variantId, stockNumber}: {
+  productId: string;
+  variantId:string; 
+  stockNumber: number;
+}) => {
   const [quantity, setQuantity] = useState(1)
 
   const stock = 4
@@ -47,9 +51,12 @@ const Add = () => {
             </Button>
 
           </ButtonGroup>
+          
+         {stockNumber < 1 ?(<Box component="span" sx={{ color: "red" }}>Product is out of stock</Box>) : (
           <Box component="span" sx={{ color: "black" }}>
-            Only <span style={{ color: "orange", fontWeight: 'bold' }}>4 items</span> left!<br /> {"Don't"} miss it
+            Only <span style={{ color: "orange", fontWeight: 'bold' }}>{stockNumber}</span> left!<br /> {"Don't"} miss it
           </Box>
+        )}
 
           
         </Box>
