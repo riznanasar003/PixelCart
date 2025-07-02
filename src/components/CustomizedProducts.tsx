@@ -1,15 +1,27 @@
 "use client";
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material'
 import { products } from '@wix/stores';
 import React, { useEffect, useState } from 'react'
 import Add from '@/components/Add';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/app/redux/store';
+import { addToWishlist, removeFromWishlist } from '@/app/redux/slices/wishlistSlice';
+import { Favorite, FavoriteBorder } from '@mui/icons-material';
 
 const CustomizedProducts = ({
   productId,
+  productTitle,
+  productImage,
+  productDescription,
+  productPrice,
   variants,
   productOptions
 }: {
   productId: string;
+  productTitle: string;
+  productImage: string;
+  productDescription: string;
+  productPrice: number;
   variants: products.Variant[];
   productOptions: products.ProductOption[];
 }) => {
@@ -47,11 +59,39 @@ const CustomizedProducts = ({
 
   }
 
+  const dispatch = useDispatch()
+
+  const wishlist = useSelector((state: RootState) => state.wishlist.items)
+  const isWishlisted = wishlist.some((item) => item.id === productId)
+
+  const toggleWishlist = () => {
+    if (isWishlisted) {
+      dispatch(removeFromWishlist(productId))
+    } else {
+      dispatch(addToWishlist({
+        id: productId,
+        title: productTitle,
+        image: productImage,
+        description: productDescription,
+        price: productPrice,
+
+      }));
+
+    }
+  }
+
 
 
   return (
     <>
       <Box mt={3} display="flex" flexDirection="column" gap={4}>
+        <Box display="flex" justifyContent="flex-end" mb={-2}>
+          <Tooltip title={isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}>
+            <IconButton onClick={toggleWishlist} sx={{ color: isWishlisted ? 'red' : 'gray' }}>
+              {isWishlisted ? <Favorite /> : <FavoriteBorder />}
+            </IconButton>
+          </Tooltip>
+        </Box>
         {productOptions.map((option) => (
           <Box key={option.name}>
             <Typography fontWeight="bold" gutterBottom>
@@ -127,20 +167,20 @@ const CustomizedProducts = ({
                         px: 2,
                         fontSize: "0.875rem",
                         borderRadius: "999px",
-                        
+
                       }}
                       style={{
-                    cursor: disabled ? "not-allowed" : "pointer",
-                    backgroundColor: selected
-                      ? "#000000"
-                      : disabled
-                      ? "#d1d5db"
-                      : "white",
-                    color: selected || disabled ? "white" : "#000000",
-                    boxShadow: disabled ? "none" : "",
-                   
-                    
-                  }}
+                        cursor: disabled ? "not-allowed" : "pointer",
+                        backgroundColor: selected
+                          ? "#000000"
+                          : disabled
+                            ? "#d1d5db"
+                            : "white",
+                        color: selected || disabled ? "white" : "#000000",
+                        boxShadow: disabled ? "none" : "",
+
+
+                      }}
                       key={choice.description}
                       onClick={clickHandler}
                     >
@@ -152,7 +192,8 @@ const CustomizedProducts = ({
             </Box>
           </Box>
         ))}
-         <Add productId={productId} variantId={selectedVariant?._id || "00000000-0000-0000-0000-000000000000"} stockNumber={selectedVariant?.stock?.quantity || 0} />
+        <Add productId={productId} variantId={selectedVariant?._id || "00000000-0000-0000-0000-000000000000"}
+          stockNumber={selectedVariant?.stock?.quantity || 0} />
       </Box>
     </>
   );

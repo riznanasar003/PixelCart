@@ -1,4 +1,6 @@
 "use client"
+import { useCartStore } from '@/hooks/useCartStore';
+import { useWixClient } from '@/hooks/useWixClient';
 import { Box, Button, ButtonGroup, Typography } from '@mui/material'
 import { useState } from 'react'
 
@@ -20,6 +22,13 @@ const Add = ({productId, variantId, stockNumber}: {
     }
 
   }
+
+
+const wixClient = useWixClient()
+
+const {addItem} = useCartStore()
+
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
       <Box>
@@ -64,6 +73,7 @@ const Add = ({productId, variantId, stockNumber}: {
         <Button
           size="small"
           variant="outlined"
+          onClick={()=>addItem(wixClient, productId, variantId, quantity)}
           sx={{
             borderRadius: "24px",
             borderColor: 'black',

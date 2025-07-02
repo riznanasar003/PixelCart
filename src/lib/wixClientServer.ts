@@ -1,5 +1,6 @@
 import { OAuthStrategy, createClient } from "@wix/sdk";
 import { collections, products } from "@wix/stores";
+import { orders } from "@wix/ecom";
 import nookies from "nookies";
 
 
@@ -17,6 +18,7 @@ export const wixClientServer  = (ctx?: any) => {
     modules: {
       products,
       collections,
+      orders
       
     },
     auth: OAuthStrategy({

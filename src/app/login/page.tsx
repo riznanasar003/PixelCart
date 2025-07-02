@@ -3,7 +3,7 @@ import { useWixClient } from '@/hooks/useWixClient'
 import { Box, Button, CircularProgress, TextField, Typography } from '@mui/material'
 import { LoginState } from '@wix/sdk'
 import { usePathname, useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Cookies from 'js-cookie'
 
 enum MODE {
@@ -15,8 +15,12 @@ enum MODE {
 
 const LoginPage = () => {
 
-  const [mode, setMode] = useState(MODE.LOGIN)
+  const wixClient = useWixClient()
+  const router = useRouter()
+  const pathName = usePathname()
 
+  const [redirecting, setRedirecting] = useState(false);
+  const [mode, setMode] = useState(MODE.LOGIN)
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -25,12 +29,26 @@ const LoginPage = () => {
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
 
-  const pathName = usePathname()
-  const router = useRouter()
+  const isLoggedIn = wixClient.auth.loggedIn();
+
+  useEffect(() => {
+    if (isLoggedIn && !redirecting) {
+      setRedirecting(true);
+      router.push("/");
+    }
+  }, [isLoggedIn, router, redirecting]);
+
+  if (redirecting) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   const formTitle =
     mode === MODE.LOGIN
-      ? "Log in"
+      ? "Log  in"
       : mode === MODE.REGISTER
         ? "Register"
         : mode === MODE.RESET_PASSWORD
@@ -46,63 +64,63 @@ const LoginPage = () => {
           ? "Reset"
           : "Verify";
 
-  const wixClient = useWixClient()
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true)
-    setError(" ")
+    setError("")
 
     try {
 
-      let response
+      let response;
 
       switch (mode) {
         case MODE.LOGIN:
-          response  = await wixClient.auth.login({
+          response = await wixClient.auth.login({
             email,
             password,
           });
           console.log(response)
           break;
 
-          case MODE.REGISTER:
-          response  = await wixClient.auth.register({
+        case MODE.REGISTER:
+          response = await wixClient.auth.register({
             email,
             password,
-            profile:{nickname: username}
+            profile: { nickname: username },
           });
           break;
 
-          case MODE.RESET_PASSWORD:
-          response  = await wixClient.auth.sendPasswordResetEmail(
+        case MODE.RESET_PASSWORD:
+          response = await wixClient.auth.sendPasswordResetEmail(
             email,
             pathName
           );
+          setMessage("password reset email sent. Please check your email")
           break;
 
-          case MODE.EMAIL_VERIFICATION:
-          response  = await wixClient.auth.processVerification({
-            verificationCode : emailCode,
+        case MODE.EMAIL_VERIFICATION:
+          response = await wixClient.auth.processVerification({
+            verificationCode: emailCode,
           });
           break;
 
-          default:
-            break;
+        default:
+          break;
 
       }
 
       console.log(response)
 
-      switch(response?.loginState){
-        case  LoginState.SUCCESS:
+      switch (response?.loginState) {
+        case LoginState.SUCCESS:
           setMessage("Successful! You're being redirected")
           const tokens = await wixClient.auth.getMemberTokensForDirectLogin(
-            response.data.sessionToken!
-          )
+            response.data.sessionToken!)
 
           console.log(tokens)
 
-          Cookies.set("refreshToken", JSON.stringify(tokens.refreshToken),{
+          Cookies.set("refreshToken", JSON.stringify(tokens.refreshToken), {
             expires: 2
           })
 
@@ -110,16 +128,32 @@ const LoginPage = () => {
           router.push("/")
           break;
 
-          default:
-            break;
+        case LoginState.FAILURE:
+          if (response.errorCode === "invalidEmail" || response.errorCode === "invalidPassword") {
+            setError("Invalid Email or Password!")
+          }
+          else if (response.errorCode === "emailAlreadyExists") {
+            setError("Email Already Exist!")
+
+          }
+          else if (response.errorCode === "resetPassword") {
+            setError("You need to reset your password!")
+
+          } else {
+            setError("something went wrong")
+          }
+        case LoginState.EMAIL_VERIFICATION_REQUIRED:
+          setMode(MODE.EMAIL_VERIFICATION);
+        case LoginState.OWNER_APPROVAL_REQUIRED:
+          setMessage("Your account is pending approval")
       }
 
-      } catch (err) {
+
+    } catch (err) {
       console.log(err)
       setError("something went wrong")
-
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
 
   }
@@ -139,7 +173,7 @@ const LoginPage = () => {
           {formTitle}
         </Typography>
 
-        {mode === MODE.REGISTER && (
+        {mode === MODE.REGISTER ? (
           <TextField
             label="Username"
             name="username"
@@ -147,7 +181,7 @@ const LoginPage = () => {
             onChange={(e) => setUsername(e.target.value)}
             fullWidth
           />
-        )}
+        ) : null}
 
         {mode !== MODE.EMAIL_VERIFICATION ? (
           <TextField
@@ -168,7 +202,7 @@ const LoginPage = () => {
           />
         )}
 
-        {(mode === MODE.LOGIN || mode === MODE.REGISTER) && (
+        {mode === MODE.LOGIN || mode === MODE.REGISTER ? (
           <TextField
             label="Password"
             type="password"
@@ -177,7 +211,7 @@ const LoginPage = () => {
             onChange={(e) => setPassword(e.target.value)}
             fullWidth
           />
-        )}
+        ) : null}
 
         {mode === MODE.LOGIN && (
           <Typography
@@ -196,7 +230,7 @@ const LoginPage = () => {
             backgroundColor: "black",
             color: "white",
             "&.Mui-disabled": {
-              backgroundColor: "#fbcfe8",
+              backgroundColor: "#d1d1d0 ",
               color: "#fff",
               cursor: "not-allowed",
             },
@@ -216,7 +250,7 @@ const LoginPage = () => {
             sx={{ fontSize: "0.875rem", textDecoration: "underline", cursor: "pointer" }}
             onClick={() => setMode(MODE.REGISTER)}
           >
-            Don't have an account?
+            Dont have an account?
           </Typography>
         )}
 
@@ -247,5 +281,6 @@ const LoginPage = () => {
     </Box>
   )
 }
+
 
 export default LoginPage

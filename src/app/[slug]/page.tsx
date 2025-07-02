@@ -22,6 +22,15 @@ const SinglePage = async ({ params }: { params: { slug: string } }) => {
   const product = products.items[0]
   console.log(product.productOptions)
 
+  
+
+
+
+  type AdditionalInfoSection = {
+    title?:string;
+    description?:string
+  };
+
   return (
     <Box
       sx={{
@@ -79,23 +88,37 @@ const SinglePage = async ({ params }: { params: { slug: string } }) => {
         <Divider sx={{ my: 2, borderBottomWidth: 1 }} />
         <Box>
           {product.variants && product.productOptions ? (
-          <CustomizedProducts productId={product._id!} variants={product.variants} productOptions={product.productOptions} />
+            <CustomizedProducts
+              productId={product._id!}
+              productTitle={product.name || ""}
+              productImage={product.media?.items?.[0]?.image?.url || ""}
+              productDescription={product.description || ""}
+              productPrice={product.price?.discountedPrice || 0}
+              variants={product.variants}
+              productOptions={product.productOptions}
+            />
+
           ) : (
 
-        <Box sx={{ mt: 2 }}>
-          <Add productId ={product._id} variantId = "00000000-0000-0000-0000-000000000000" stockNumber={product.stock?.quantity || 0} />
+            <Box sx={{ mt: 2 }}>
+              <Add
+                productId={product._id || ""}
+                variantId="00000000-0000-0000-0000-000000000000"
+                stockNumber={product.stock?.quantity || 0}
+              />
+
+            </Box>
+          )}
         </Box>
-           )}
-             </Box>
-        {product.additionalInfoSections?.map((section:any)=>(
+        {product.additionalInfoSections?.map((section: AdditionalInfoSection) => (
           <Box key={section.title}>
-          <Divider sx={{ my: 2 }} />
-          <Typography variant='h6' sx={{ fontWeight: "bold" }}>{section.title}</Typography>
-          <Typography variant='subtitle2' sx={{ textAlign: "justify" }}>{section.description}</Typography>
-          
-        </Box>
-      ))
-      }
+            <Divider sx={{ my: 2 }} />
+            <Typography variant='h6' sx={{ fontWeight: "bold" }}>{section.title}</Typography>
+            <Typography variant='subtitle2' sx={{ textAlign: "justify" }}>{section.description}</Typography>
+
+          </Box>
+        ))
+        }
       </Box>
     </Box>
   );

@@ -11,19 +11,29 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import Avatar from '@mui/material/Avatar';
+// import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import Container from '@mui/material/Container';
 import Badge from '@mui/material/Badge';
 import AdbIcon from '@mui/icons-material/Adb';
-import { useRouter } from 'next/navigation';
+// import { usePathname, useRouter } from 'next/navigation';
 import { ShoppingCart } from '@mui/icons-material';
 import CartModal from './CartModal';
+import { useWixClient } from '@/hooks/useWixClient';
+// import Cookies from 'js-cookie';
+import { useCartStore } from '@/hooks/useCartStore';
+import Link from 'next/link';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+// import { useSelector } from 'react-redux';
+// import { RootState } from '@/app/redux/store';
 
-const pages = ['Homepage', 'Shop', 'Deals', 'About', 'Contact'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const pages = [
+  { label: 'HOMEPAGE', path: '/' },
+  { label: 'ABOUT', path: '/about' },
+  { label: 'CONTACT', path: '/contact' },
+];
+// const settings = ['Profile', 'Logout'];
 
 // Styled Search Components
 const Search = styled('div')(({ theme }) => ({
@@ -46,7 +56,7 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  
+
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
@@ -56,7 +66,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
     width: '20ch',
-    
+
   },
 }));
 
@@ -69,21 +79,44 @@ const Navbar = () => {
   const handleCloseNavMenu = () => setAnchorElNav(null);
   const handleCloseUserMenu = () => setAnchorElUser(null);
 
-  const [, setIsProfileOpen] = React.useState(false)
-  const [isCartOpen, setIsCartOpen] =React.useState(false)
+  // const [, setIsProfileOpen] = React.useState(false)
+  const [isCartOpen, setIsCartOpen] = React.useState(false)
+  // const [isLoading, setIsLoading] = React.useState(false)
 
-  const isLoggedIn = false;
-  
-  const router = useRouter()
+  const wixClient = useWixClient()
+  // const router = useRouter()
+  // const pathName = usePathname()
 
-  const handleProfileClick = () =>{
-    handleCloseUserMenu();
-    if(!isLoggedIn){
-    router.push('/login')
-    }
-    setIsProfileOpen((prev)=>!prev)
-  }
+  // const isLoggedIn = wixClient.auth.loggedIn()
 
+  // const wishlistCount = useSelector((state: RootState) => state.wishlist.items.length);
+
+  // const handleProfileClick = () => {
+  //   handleCloseUserMenu();
+  //   if (!isLoggedIn) {
+  //     router.push('/login')
+  //   } else {
+  //     setIsProfileOpen((prev) => !prev)
+  //   }
+  // }
+
+
+  // const handleLogout = async () => {
+  //   setIsLoading(true)
+  //   Cookies.remove("refreshToken")
+  //   const { logoutUrl } = await wixClient.auth.logout(window.location.href);
+  //   setIsLoading(false)
+  //   setIsProfileOpen(false)
+  //   router.push(logoutUrl)
+  // }
+
+  const { counter, getCart } = useCartStore()
+
+
+
+  React.useEffect(() => {
+    getCart(wixClient)
+  }, [wixClient, getCart])
 
   return (
     <AppBar position="static" sx={{ backgroundColor: '#ffffff', color: 'black' }}>
@@ -131,10 +164,27 @@ const Navbar = () => {
               sx={{ display: { xs: 'block', md: 'none' } }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
+                <Button
+                  key={page.label}
+                  component={Link}
+                  href={page.path}
+                  onClick={handleCloseNavMenu}
+                  sx={{
+                    my: 2,
+                    mx: 2,
+                    color: 'black',
+                    display: 'block',
+                    fontFamily: 'serif',
+                    fontWeight: 'bolder',
+                    fontSize: '18px'
+                  }}
+                >
+                  {page.label}
+                </Button>
               ))}
+
+
+
             </Menu>
           </Box>
 
@@ -153,23 +203,22 @@ const Navbar = () => {
               letterSpacing: '.3rem',
               color: 'inherit',
               textDecoration: 'none',
+
             }}
           >
             PIXELCART
           </Typography>
 
           {/* Nav Buttons */}
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', gap: '10' } }}>
             {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block', fontFamily:'serif' }}
-            
-              >
-                {page}
-              </Button>
+              <MenuItem key={page.label} onClick={handleCloseNavMenu}>
+                <Link href={page.path} passHref>
+                  <Typography textAlign="center" sx={{fontWeight:'bolder', fontSize:'18px'}}>{page.label}</Typography>
+                </Link>
+              </MenuItem>
             ))}
+
           </Box>
 
           <Search>
@@ -181,25 +230,29 @@ const Navbar = () => {
 
           {/* Icons */}
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Link href="/wishlist" passHref>
+              <IconButton size="large" color="inherit">
+                {/* <Badge badgeContent={wishlistCount} color='error'> */}
+                <FavoriteIcon sx={{ color: 'black' }} />
+                {/* </Badge> */}
+              </IconButton>
+            </Link>
+
             <IconButton size="large" color="inherit"
-            onClick={()=>{setIsCartOpen((prev)=>!prev)}}>
-              <Badge badgeContent={2} color="error">
-                <ShoppingCart/>
+              onClick={() => { setIsCartOpen((prev) => !prev) }}>
+              <Badge badgeContent={counter} color="error">
+                <ShoppingCart />
               </Badge>
             </IconButton>
+
             {isCartOpen && (
-                <CartModal/>
+              <CartModal />
             )}
-            <IconButton size="large" color="inherit">
-              <Badge badgeContent={17} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
 
             {/* Avatar & Menu */}
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0, ml: 1 }}>
-                <Avatar alt="User" src="/static/images/avatar/2.jpg" />
+                {/* <Avatar alt="User" src="/static/images/avatar/2.jpg" /> */}
               </IconButton>
             </Tooltip>
             <Menu
@@ -211,14 +264,25 @@ const Navbar = () => {
               anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
               transformOrigin={{ vertical: 'top', horizontal: 'right' }}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting}
-                onClick={handleProfileClick}
+              {/* {settings.map((setting) => (
+                <MenuItem
+                  key={setting}
+                  onClick={() => {
+                    if (setting === 'Logout') {
+                      handleLogout();
+                    } else if (setting === 'Profile') {
+                      router.push('/profile');
+                    }
+                    handleCloseUserMenu(); // closes the menu after click
+                  }}
                 >
-                  <Typography textAlign="center" fontFamily='serif'>{setting}</Typography>
+                  <Typography textAlign="center" fontFamily="serif">
+                    {setting === 'Logout' ? (isLoading ? 'Logging out...' : 'Logout') : setting}
+                  </Typography>
                 </MenuItem>
-              ))}
+              ))} */}
             </Menu>
+
           </Box>
         </Toolbar>
       </Container>

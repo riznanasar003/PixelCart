@@ -22,7 +22,7 @@ const Filter = () => {
         <Box sx={{
             mt: 4,
             display: 'flex',
-            justifyContent: 'center',
+            justifyContent: 'flex-end',
             px: 6,
             
             
@@ -30,7 +30,8 @@ const Filter = () => {
             <Box sx={{
                 display: 'flex',
                 gap: 6,
-                alignItems: "center",
+                alignItems: "flex-end",
+                justifyContent:"flex-end"
                 
             }}
                 flexWrap={'wrap'}>
@@ -84,90 +85,6 @@ const Filter = () => {
                     name='max'
                     onChange={handleFilterChange}
                     fullWidth slotProps={{ input: { sx: { borderRadius: "40px", fontFamily: "serif" } } }} />
-                </Box>
-
-
-                <Box sx={{ minWidth: 120 }}>
-                    <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label" sx={{ fontFamily: 'serif' }}>Size</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            label="Size"
-                            name='size'
-                            onChange={handleFilterChange}
-
-                            sx={{ fontFamily: "serif", borderRadius: "40px" }}
-                        >
-                            <MenuItem value="XS">XS</MenuItem>
-                            <MenuItem value="S">S</MenuItem>
-                            <MenuItem value="M">M</MenuItem>
-                            <MenuItem value="L">L</MenuItem>
-                            <MenuItem value="XL">XL</MenuItem>
-                            <MenuItem value="XXL">XXL</MenuItem>
-                            <MenuItem value="XXL">XXXL</MenuItem>
-
-                        </Select>
-                    </FormControl>
-                </Box>
-                <Box sx={{ minWidth: 120 }}>
-                    <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label" >Color</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            label="Color"
-                            name='color'
-                            onChange={handleFilterChange}
-
-                            sx={{ fontFamily: "serif", borderRadius: "40px" }}
-                        >
-                            <MenuItem value="Black" >Black</MenuItem>
-                            <MenuItem value="White">White</MenuItem>
-                            <MenuItem value="White">White</MenuItem>
-                            <MenuItem value="Red">Red</MenuItem>
-                            <MenuItem value="Blue">Blue</MenuItem>
-                            <MenuItem value="Green">Green</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Box>
-                <Box sx={{ minWidth: 120 }}>
-                    <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label" sx={{ fontFamily: 'serif' }}>Category</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            label="Category"
-                            name='category'
-                            onChange={handleFilterChange}
-
-                            sx={{ fontFamily: "serif", borderRadius: "40px" }}
-                        >
-                            <MenuItem value="Men" >Men</MenuItem>
-                            <MenuItem value="Women" >Women</MenuItem>
-                            <MenuItem value="Kids" >Kids</MenuItem>
-
-                        </Select>
-                    </FormControl>
-                </Box>
-                <Box sx={{ minWidth: 120 }}>
-                    <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label" sx={{ fontFamily: 'serif' }}>All Filters</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            label="All Filters"
-                            name='allfilter'
-                            onChange={handleFilterChange
-
-                            }
-
-                            sx={{ fontFamily: "serif", borderRadius: "40px" }}
-                        >
-                            <MenuItem value="physical">Physical</MenuItem>
-                            <MenuItem value="digital">Digital</MenuItem>
-                        </Select>
-                    </FormControl>
                 </Box>
                 <Box sx={{ minWidth: 120 }}>
                     <FormControl fullWidth>

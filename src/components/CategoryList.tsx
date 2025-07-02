@@ -1,3 +1,4 @@
+
 import { wixClientServer } from '@/lib/wixClientServer';
 import { Box, Card, Link, Typography } from '@mui/material'
 import Image from 'next/image';

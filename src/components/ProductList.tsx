@@ -20,7 +20,7 @@ const ProductList = async ({
 }: {
     categoryId: string;
     limit?: number;
-    searchParams?:any
+    searchParams?:any;
 }) => {
 
     const wixClient = await wixClientServer();
@@ -44,6 +44,7 @@ if (searchParams?.sort) {
     if (sortType === "desc") {
       productQuery.descending(sortBy);
     }
+    
   }
 
   const res = await productQuery.find();
@@ -123,7 +124,12 @@ if (searchParams?.sort) {
         ))}
        
       </Grid>
-        <Pagination currentPage={res.currentPage || 0} hasPrev={res.hasPrev()} hasNext={res.hasNext()} />
+      {searchParams?.cat || searchParams?.name ? (
+      <Pagination 
+      currentPage={res.currentPage || 0} 
+      hasPrev={res.hasPrev()} 
+      hasNext={res.hasNext()} 
+      />) : null}
     </Box>
     );
 };

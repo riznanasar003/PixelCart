@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import ClientNavbar from "@/components/ClientNavbar";
 import Theme from "./Theme/theme";
 import { WixClientContextProvider } from "@/context/wixContext";
+import ReduxProvider from "./redux/ReduxProvider";
 
 
 const geistSans = Geist({
@@ -30,6 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <ReduxProvider>
         <WixClientContextProvider>
         <Theme>
         <ClientNavbar/>
@@ -37,6 +39,7 @@ export default function RootLayout({
         <Footer/>
         </Theme>
         </WixClientContextProvider>
+        </ReduxProvider>
       </body>
     </html>
   );

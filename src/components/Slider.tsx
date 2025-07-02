@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const slides = [
     {
@@ -41,6 +41,11 @@ const Slider = () => {
         }, 3000);
         return () => clearInterval(interval)
     }, [])
+
+    const router = useRouter()
+    const handleBuyNow = () =>{
+        router.push("/list")
+    }
 
     return (
         <Box sx={{ height: "calc(92vh - 80px)", overflow: "hidden", position: "relative" }}>
@@ -84,11 +89,13 @@ const Slider = () => {
                             <Typography variant="h2" fontFamily="serif" fontWeight={800}>
                                 {slide.title}
                             </Typography>
-                            <Link href={slide.url} passHref>
-                                <Button variant="contained" sx={{ backgroundColor: "black", color: "white", fontFamily:"serif", borderRadius:"10px", padding:"10px 20px" }}>
+                            
+                                <Button variant="contained"
+                                onClick={handleBuyNow}
+                                sx={{ backgroundColor: "black", color: "white", fontFamily:"serif", borderRadius:"24px", padding:"10px 30px" }}>
                                     SHOP NOW
                                 </Button>
-                            </Link>
+                          
                         </Box>
                         <Box
                             sx={{
