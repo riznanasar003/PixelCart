@@ -9,7 +9,6 @@ import { useRouter } from 'next/navigation';
 
 const CartModal = () => {
 
-    //const cartItems = true
 
     const wixClient = useWixClient()
 

@@ -2,7 +2,7 @@
 import { useWixClient } from '@/hooks/useWixClient'
 import { Box, Button, CircularProgress, TextField, Typography } from '@mui/material'
 import { LoginState } from '@wix/sdk'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import Cookies from 'js-cookie'
 
@@ -30,11 +30,13 @@ const LoginPage = () => {
   const [message, setMessage] = useState('')
 
   const isLoggedIn = wixClient.auth.loggedIn();
+  const searchParams = useSearchParams();
+const returnTo = searchParams.get("returnTo") || "/";
 
   useEffect(() => {
     if (isLoggedIn && !redirecting) {
       setRedirecting(true);
-      router.push("/");
+      router.push(returnTo);
     }
   }, [isLoggedIn, router, redirecting]);
 
@@ -125,7 +127,7 @@ const LoginPage = () => {
           })
 
           wixClient.auth.setTokens(tokens)
-          router.push("/")
+          router.push(returnTo);
           break;
 
         case LoginState.FAILURE:
@@ -142,10 +144,15 @@ const LoginPage = () => {
           } else {
             setError("something went wrong")
           }
+          break;
+
         case LoginState.EMAIL_VERIFICATION_REQUIRED:
           setMode(MODE.EMAIL_VERIFICATION);
+          break;
+
         case LoginState.OWNER_APPROVAL_REQUIRED:
           setMessage("Your account is pending approval")
+          break
       }
 
 

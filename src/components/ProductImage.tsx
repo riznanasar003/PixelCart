@@ -3,8 +3,15 @@ import { Box } from '@mui/material'
 import React, { useState } from 'react'
 import Image from 'next/image'
 
+type ProductImageItem = {
+  _id: string;
+  image?: {
+    url: string;
+  };
+};
 
-const ProductImage = ({items}:{items:any}) => {
+
+const ProductImage = ({items}:{items: ProductImageItem[]}) => {
 
 
     const [pimage, setPimage] = useState(0)
@@ -16,7 +23,7 @@ const ProductImage = ({items}:{items:any}) => {
                 position: "relative",
 
             }}>
-                <Image src={items[pimage].image?.url}
+                <Image src={items[pimage].image?.url || "/placeholder.jpg"}
                     alt='product'
                     fill
                     sizes='50vw'
@@ -27,14 +34,14 @@ const ProductImage = ({items}:{items:any}) => {
                 gap: 2,
                 mt: 2
             }}>
-                {items.map((item: any, i:number) => (
+                {items.map((item, i) => (
                     <Box
                         key={item._id}
                         sx={{ width: 150, height: 100, position: "relative", cursor: "pointer" }}
                         onClick={() => setPimage(i)}
                     >
                         <Image
-                            src={item.image?.url}
+                            src={item.image?.url || "/placeholder.jpg"}
                             alt=''
                             fill
                             style={{ objectFit: 'cover' }}

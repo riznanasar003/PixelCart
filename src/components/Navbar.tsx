@@ -17,7 +17,7 @@ import Tooltip from '@mui/material/Tooltip';
 import Container from '@mui/material/Container';
 import Badge from '@mui/material/Badge';
 import AdbIcon from '@mui/icons-material/Adb';
-// import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { ShoppingCart } from '@mui/icons-material';
 import CartModal from './CartModal';
 import { useWixClient } from '@/hooks/useWixClient';
@@ -84,10 +84,28 @@ const Navbar = () => {
   // const [isLoading, setIsLoading] = React.useState(false)
 
   const wixClient = useWixClient()
-  // const router = useRouter()
-  // const pathName = usePathname()
+  const router = useRouter()
+  const pathName = usePathname()
 
-  // const isLoggedIn = wixClient.auth.loggedIn()
+  const isLoggedIn = wixClient.auth.loggedIn();
+
+  // 🔒 Handle Wishlist Access
+const handleWishlistClick = () => {
+  if (!isLoggedIn) {
+    router.push(`/auth?returnTo=${pathName}`);
+    return;
+  }
+  router.push('/wishlist');
+};
+
+// 🔒 Handle Cart Access
+const handleCartClick = () => {
+  if (!isLoggedIn) {
+    router.push(`/auth?returnTo=${pathName}`);
+    return;
+  }
+  setIsCartOpen((prev) => !prev);
+};
 
   // const wishlistCount = useSelector((state: RootState) => state.wishlist.items.length);
 
@@ -230,16 +248,16 @@ const Navbar = () => {
 
           {/* Icons */}
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Link href="/wishlist" passHref>
-              <IconButton size="large" color="inherit">
+            
+              <IconButton size="large" color="inherit" onClick={handleWishlistClick}>
                 {/* <Badge badgeContent={wishlistCount} color='error'> */}
                 <FavoriteIcon sx={{ color: 'black' }} />
                 {/* </Badge> */}
               </IconButton>
-            </Link>
+          
 
             <IconButton size="large" color="inherit"
-              onClick={() => { setIsCartOpen((prev) => !prev) }}>
+              onClick={handleCartClick}>
               <Badge badgeContent={counter} color="error">
                 <ShoppingCart />
               </Badge>

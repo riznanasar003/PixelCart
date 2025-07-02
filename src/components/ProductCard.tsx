@@ -18,7 +18,7 @@ export const ProductCard = ({ product }: Props) => {
       <CardContent>
         <Typography variant="h6">{product.title}</Typography>
         <Typography variant="body2" color="text.secondary">
-          ₹{product.price}
+          ₹ {product.price}
         </Typography>
         <Button onClick={() => dispatch(addToWishlist(product))} sx={{ mt: 2 }}>
           Add to Wishlist

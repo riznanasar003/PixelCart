@@ -38,6 +38,12 @@ export default function CheckoutPage() {
     },
   });
 
+      const subtotal = cart?.lineItems?.reduce((acc, item) => {
+        const price = parseFloat(item?.price?.amount || '0');
+        const quantity = item?.quantity || 1;
+        return acc + price * quantity;
+    }, 0) || 0;
+
   return (
     <Box maxWidth="700px" mx="auto" p={4}>
       <Typography variant="h4" mb={3}>Checkout</Typography>
@@ -97,12 +103,12 @@ export default function CheckoutPage() {
             <Box>
               {cart.lineItems?.map((item) => (
                 <Box key={item._id} display="flex" justifyContent="space-between" py={1}>
-                  <Typography>{item.productName?.original} x{item.quantity}</Typography>
-                  <Typography>₹ {item.price?.amount * item.quantity}</Typography>
+                  <Typography>{item.productName?.original} x{item.quantity ?? 0}</Typography>
+                  <Typography>₹ {Number(item.price?.amount ?? 0) * (item.quantity ?? 0)}</Typography>
                 </Box>
               ))}
               <Divider sx={{ my: 2 }} />
-              <Typography variant="h4" color="success">Subtotal: ₹ {cart.subtotal?.amount || 0}</Typography>
+              <Typography variant="h4" color="success">Subtotal: ₹ {subtotal.toFixed(2) || 0}</Typography>
             </Box>
             <Box display="flex" justifyContent="space-between" mt={4}>
               <Button onClick={() => setActiveStep((prev) => prev - 1)}>Back</Button>
@@ -118,7 +124,7 @@ export default function CheckoutPage() {
             <Typography variant="body1">Email: {formik.values.email}</Typography>
             <Typography variant="body1">Address: {formik.values.address}</Typography>
             <Divider sx={{ my: 2 }} />
-            <Typography variant="h5" color="darkgreen">Total: ₹{cart.subtotal?.amount || 0}</Typography>
+            <Typography variant="h5" color="darkgreen">Total: ₹ {subtotal.toFixed(2) || 0}</Typography>
             <Box display="flex" justifyContent="space-between" mt={4}>
               <Button onClick={() => setActiveStep((prev) => prev - 1)}>Back</Button>
               <Button variant="contained" onClick={handleFinish}>Place Order</Button>

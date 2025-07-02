@@ -12,7 +12,7 @@ const slides = [
         description: "Sale! Up to 50% off!",
         img: "https://images.pexels.com/photos/1926769/pexels-photo-1926769.jpeg?auto=compress&cs=tinysrgb&w=800",
         url: "/",
-        bg: "linear-gradient(to right, #FFFBEB, #FFE4E6)", // yellow-50 to pink-50
+        bg: "linear-gradient(to right, #FFFBEB, #FFE4E6)", 
     },
     {
         id: 2,
@@ -20,7 +20,7 @@ const slides = [
         description: "Sale! Up to 50% off!",
         img: "https://images.pexels.com/photos/1021693/pexels-photo-1021693.jpeg?auto=compress&cs=tinysrgb&w=800",
         url: "/",
-        bg: "linear-gradient(to right, #FFE4E6, #EFF6FF)", // pink-50 to blue-50
+        bg: "linear-gradient(to right, #FFE4E6, #EFF6FF)", 
     },
     {
         id: 3,
@@ -28,7 +28,7 @@ const slides = [
         description: "Sale! Up to 50% off!",
         img: "https://images.pexels.com/photos/1183266/pexels-photo-1183266.jpeg?auto=compress&cs=tinysrgb&w=800",
         url: "/",
-        bg: "linear-gradient(to right, #EFF6FF, #FFFBEB)", // blue-50 to yellow-50
+        bg: "linear-gradient(to right, #EFF6FF, #FFFBEB)", 
     },
 ];
 

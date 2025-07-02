@@ -26,33 +26,40 @@ export const useCartStore = create<CartState>((set) => ({
       set({
         cart: cart || [],
         isLoading: false,
-        counter: cart?.lineItems.length || 0,
+        counter: cart?.lineItems?.length || 0,
       });
-    } catch (err) {
+    } catch {
       set((prev) => ({ ...prev, isLoading: false }));
     }
   },
-  addItem: async (wixClient, productId, variantId, quantity) => {
-    set((state) => ({ ...state, isLoading: true }));
-    const response = await wixClient.currentCart.addToCurrentCart({
-      lineItems: [
-        {
-          catalogReference: {
-            appId: process.env.NEXT_PUBLIC_WIX_APP_ID!,
-            catalogItemId: productId,
-            ...(variantId && { options: { variantId } }),
-          },
-          quantity: quantity,
-        },
-      ],
-    });
+addItem: async (wixClient, productId, variantId, quantity) => {
+  const isLoggedIn = wixClient.auth.loggedIn();
+  if (!isLoggedIn) {
+    window.location.href = `/login?returnTo=${encodeURIComponent(window.location.pathname)}`;
+    return;
+  }
 
-    set({
-      cart: response.cart,
-      counter: response.cart?.lineItems.length,
-      isLoading: false,
-    });
-  },
+  set((state) => ({ ...state, isLoading: true }));
+  const response = await wixClient.currentCart.addToCurrentCart({
+    lineItems: [
+      {
+        catalogReference: {
+          appId: process.env.NEXT_PUBLIC_WIX_APP_ID!,
+          catalogItemId: productId,
+          ...(variantId && { options: { variantId } }),
+        },
+        quantity: quantity,
+      },
+    ],
+  });
+
+  set({
+    cart: response.cart,
+    counter: response.cart?.lineItems?.length,
+    isLoading: false,
+  });
+},
+
   removeItem: async (wixClient, itemId) => {
     set((state) => ({ ...state, isLoading: true }));
     const response = await wixClient.currentCart.removeLineItemsFromCurrentCart(
@@ -61,8 +68,8 @@ export const useCartStore = create<CartState>((set) => ({
 
     set({
       cart: response.cart,
-      counter: response.cart?.lineItems.length,
+      counter: response.cart?.lineItems?.length || 0,
       isLoading: false,
     });
   },
-}));
+}));  

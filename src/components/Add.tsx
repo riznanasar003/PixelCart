@@ -4,9 +4,9 @@ import { useWixClient } from '@/hooks/useWixClient';
 import { Box, Button, ButtonGroup, Typography } from '@mui/material'
 import { useState } from 'react'
 
-const Add = ({productId, variantId, stockNumber}: {
+const Add = ({ productId, variantId, stockNumber }: {
   productId: string;
-  variantId:string; 
+  variantId: string;
   stockNumber: number;
 }) => {
   const [quantity, setQuantity] = useState(1)
@@ -24,9 +24,9 @@ const Add = ({productId, variantId, stockNumber}: {
   }
 
 
-const wixClient = useWixClient()
+  const wixClient = useWixClient()
 
-const {addItem} = useCartStore()
+  const { addItem } = useCartStore()
 
 
   return (
@@ -60,39 +60,50 @@ const {addItem} = useCartStore()
             </Button>
 
           </ButtonGroup>
-          
-         {stockNumber < 1 ?(<Box component="span" sx={{ color: "red" }}>Product is out of stock</Box>) : (
-          <Box component="span" sx={{ color: "black" }}>
-            Only <span style={{ color: "orange", fontWeight: 'bold' }}>{stockNumber}</span> left!<br /> {"Don't"} miss it
-          </Box>
-        )}
 
-          
+          {stockNumber < 1 ? (<Box component="span" sx={{ color: "red" }}>Product is out of stock</Box>) : (
+            <Box component="span" sx={{ color: "black" }}>
+              Only <span style={{ color: "orange", fontWeight: 'bold' }}>{stockNumber}</span> left!<br /> {"Don't"} miss it
+            </Box>
+          )}
+
+
         </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <Button
-          size="small"
-          variant="outlined"
-          onClick={()=>addItem(wixClient, productId, variantId, quantity)}
-          sx={{
-            borderRadius: "24px",
-            borderColor: 'black',
-            transition: 'all 0.3s ease',
-            color: 'black',
-            px: 3,
-            py: 1,
-            '&:hover': {
-              backgroundColor: 'black',
-              color: 'white',
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={async () => {
+              const isLoggedIn = await wixClient.auth.loggedIn();
+
+              if (!isLoggedIn) {
+                const currentPath = window.location.pathname;
+                window.location.href = `/login?returnTo=${currentPath}`;
+                return;
+              }
+
+              addItem(wixClient, productId, variantId, quantity);
+            }}
+
+            sx={{
+              borderRadius: "24px",
               borderColor: 'black',
-            },
-          }}
-        >
-          Add to Cart
-        </Button>
+              transition: 'all 0.3s ease',
+              color: 'black',
+              px: 3,
+              py: 1,
+              '&:hover': {
+                backgroundColor: 'black',
+                color: 'white',
+                borderColor: 'black',
+              },
+            }}
+          >
+            Add to Cart
+          </Button>
+        </Box>
       </Box>
-      </Box>
-      
+
 
     </Box>
 

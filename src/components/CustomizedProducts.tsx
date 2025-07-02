@@ -7,6 +7,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/app/redux/store';
 import { addToWishlist, removeFromWishlist } from '@/app/redux/slices/wishlistSlice';
 import { Favorite, FavoriteBorder } from '@mui/icons-material';
+import { useWixClient } from '@/hooks/useWixClient';
+import { usePathname, useRouter } from 'next/navigation';
 
 const CustomizedProducts = ({
   productId,
@@ -28,6 +30,32 @@ const CustomizedProducts = ({
 
   const [selectedOptions, setSelectedOptions] = useState<{ [key: string]: string }>({})
   const [selectedVariant, setSelectedVariant] = useState<products.Variant>();
+
+const wixClient = useWixClient();
+const router = useRouter();
+const pathname = usePathname();
+
+const toggleWishlist = async () => {
+  const loggedIn = await wixClient.auth.loggedIn();
+
+  if (!loggedIn) {
+    router.push(`/login?returnTo=${pathname}`);
+    return;
+  }
+
+  if (isWishlisted) {
+    dispatch(removeFromWishlist(productId));
+  } else {
+    dispatch(addToWishlist({
+      id: productId,
+      title: productTitle,
+      image: productImage,
+      description: productDescription,
+      price: productPrice,
+    }));
+  }
+};
+
 
   useEffect(() => {
     const variant = variants.find((v => {
@@ -64,21 +92,6 @@ const CustomizedProducts = ({
   const wishlist = useSelector((state: RootState) => state.wishlist.items)
   const isWishlisted = wishlist.some((item) => item.id === productId)
 
-  const toggleWishlist = () => {
-    if (isWishlisted) {
-      dispatch(removeFromWishlist(productId))
-    } else {
-      dispatch(addToWishlist({
-        id: productId,
-        title: productTitle,
-        image: productImage,
-        description: productDescription,
-        price: productPrice,
-
-      }));
-
-    }
-  }
 
 
 
