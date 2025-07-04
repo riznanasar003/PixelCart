@@ -1,29 +1,23 @@
 "use client"
 import { Typography } from '@mui/material'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import React, { useEffect } from 'react'
 import Confetti from 'react-confetti'
 
 const SuccessPage = () => {
 
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const sessionId = searchParams.get("session_id");
+
+
 
   useEffect(() => {
-    if (!sessionId) {
-      // No session_id found, redirect to home or show error
-      router.push("/");
-      return;
-    }
-
-    // Optional: auto redirect to orders page after 3s
     const timeout = setTimeout(() => {
-      router.push("/orders");
+      router.push('/orders');
     }, 3000);
 
     return () => clearTimeout(timeout);
-  }, [sessionId, router]);
+  }, []);
+  
 
   return (
     <div style={{

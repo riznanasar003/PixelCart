@@ -30,7 +30,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 
 const pages = [
   { label: 'HOMEPAGE', path: '/' },
-  { label: 'ABOUT', path: '/about' },
+  { label: 'ORDERS', path: '/orders' },
   { label: 'CONTACT', path: '/contact' },
 ];
 // const settings = ['Profile', 'Logout'];
@@ -128,7 +128,7 @@ const Navbar = () => {
   //   router.push(logoutUrl)
   // }
 
-  const { counter, getCart } = useCartStore()
+  const { counter } = useCartStore()
 
 
 
@@ -146,7 +146,7 @@ const Navbar = () => {
             variant="h6"
             noWrap
             component="a"
-            href="#"
+            href="/"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
