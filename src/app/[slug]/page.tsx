@@ -44,7 +44,7 @@ const SinglePage = async ({ params }: { params: { slug: string } }) => {
     >
 
       <Box sx={{ width: '100%', maxWidth: 450, maxheight: 250 }}>
-        <ProductImage items={product.media?.items} />
+        <ProductImage items={product.media?.items ?? []} />
       </Box>
 
       <Box flex="1" minWidth={300}>

@@ -31,14 +31,14 @@ const LoginPage = () => {
 
   const isLoggedIn = wixClient.auth.loggedIn();
   const searchParams = useSearchParams();
-const returnTo = searchParams.get("returnTo") || "/";
+  const returnTo = searchParams.get("returnTo") || "/";
 
   useEffect(() => {
     if (isLoggedIn && !redirecting) {
       setRedirecting(true);
       router.push(returnTo);
     }
-  }, [isLoggedIn, router, redirecting]);
+  }, [isLoggedIn, redirecting]);
 
   if (redirecting) {
     return (
@@ -112,22 +112,28 @@ const returnTo = searchParams.get("returnTo") || "/";
 
       }
 
-      console.log(response)
-
       switch (response?.loginState) {
         case LoginState.SUCCESS:
+          console.log("login success is executing")
           setMessage("Successful! You're being redirected")
-          const tokens = await wixClient.auth.getMemberTokensForDirectLogin(
-            response.data.sessionToken!)
+          console.log(response)
+          wixClient.auth.getMemberTokensForDirectLogin(
+            response.data.sessionToken!).then((tokens) => {
+              console.log(tokens, 'hekl')
+              Cookies.set("refreshToken", JSON.stringify(tokens.refreshToken), {
+                expires: 2
+              })
+              wixClient.auth.setTokens(tokens)
+              router.push(returnTo);
+            })
+            .catch((err) => {
+              console.error(err)
+            })
 
-          console.log(tokens)
+          console.log("tokens fetched")
 
-          Cookies.set("refreshToken", JSON.stringify(tokens.refreshToken), {
-            expires: 2
-          })
-
-          wixClient.auth.setTokens(tokens)
           router.push(returnTo);
+
           break;
 
         case LoginState.FAILURE:
@@ -144,17 +150,23 @@ const returnTo = searchParams.get("returnTo") || "/";
           } else {
             setError("something went wrong")
           }
+          console.log("failure is executing")
           break;
 
         case LoginState.EMAIL_VERIFICATION_REQUIRED:
           setMode(MODE.EMAIL_VERIFICATION);
+          console.log("email verification required is executing")
           break;
 
         case LoginState.OWNER_APPROVAL_REQUIRED:
           setMessage("Your account is pending approval")
+          console.log("owner approval required is executing")
           break
+        default:
+          setError("something went wrong")
+          console.log("default is executing")
       }
-
+      console.log("response", response)
 
     } catch (err) {
       console.log(err)

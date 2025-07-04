@@ -8,6 +8,7 @@ export const useAuthRedirect = () => {
 
   const checkAuth = () => {
     const token = Cookies.get('sessionToken');
+    console.log(token)
     if (!token) {
       router.push(`/auth?returnTo=${pathname}`);
       return false;

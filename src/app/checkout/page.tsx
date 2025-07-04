@@ -4,6 +4,11 @@ import { useCartStore } from "@/hooks/useCartStore";
 import { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+
+
 
 const steps = ["Shipping Info", "Review Cart", "Place Order"];
 
@@ -17,14 +22,25 @@ export default function CheckoutPage() {
   const [activeStep, setActiveStep] = useState(0);
   const { cart } = useCartStore();
 
-  const generateOrderId = () => {
-    return "order_" + Math.random().toString(36).substring(2, 10);
+
+  const handleFinish = async () => {
+    const stripe = await stripePromise;
+
+    const res = await fetch("/api/create-checkout-session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ items: cart.lineItems }),
+    });
+
+    const data = await res.json();
+
+    if (data.id) {
+      await stripe?.redirectToCheckout({ sessionId: data.id });
+    } else {
+      console.error("Checkout error", data.error);
+    }
   };
 
-  const handleFinish = () => {
-    const fakeOrderId = generateOrderId();
-    window.location.href = `/success?orderId=${fakeOrderId}`;
-  };
 
   const formik = useFormik({
     initialValues: {
@@ -38,11 +54,11 @@ export default function CheckoutPage() {
     },
   });
 
-      const subtotal = cart?.lineItems?.reduce((acc, item) => {
-        const price = parseFloat(item?.price?.amount || '0');
-        const quantity = item?.quantity || 1;
-        return acc + price * quantity;
-    }, 0) || 0;
+  const subtotal = cart?.lineItems?.reduce((acc, item) => {
+    const price = parseFloat(item?.price?.amount || '0');
+    const quantity = item?.quantity || 1;
+    return acc + price * quantity;
+  }, 0) || 0;
 
   return (
     <Box maxWidth="700px" mx="auto" p={4}>
@@ -101,7 +117,7 @@ export default function CheckoutPage() {
         {activeStep === 1 && (
           <>
             <Box>
-              {cart.lineItems?.map((item) => (
+              {cart?.lineItems?.map((item) => (
                 <Box key={item._id} display="flex" justifyContent="space-between" py={1}>
                   <Typography>{item.productName?.original} x{item.quantity ?? 0}</Typography>
                   <Typography>₹ {Number(item.price?.amount ?? 0) * (item.quantity ?? 0)}</Typography>

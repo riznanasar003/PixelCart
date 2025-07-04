@@ -90,22 +90,22 @@ const Navbar = () => {
   const isLoggedIn = wixClient.auth.loggedIn();
 
   // 🔒 Handle Wishlist Access
-const handleWishlistClick = () => {
-  if (!isLoggedIn) {
-    router.push(`/auth?returnTo=${pathName}`);
-    return;
-  }
-  router.push('/wishlist');
-};
+  const handleWishlistClick = () => {
+    if (!isLoggedIn) {
+      router.push(`/auth?returnTo=${pathName}`);
+      return;
+    }
+    router.push('/wishlist');
+  };
 
-// 🔒 Handle Cart Access
-const handleCartClick = () => {
-  if (!isLoggedIn) {
-    router.push(`/auth?returnTo=${pathName}`);
-    return;
-  }
-  setIsCartOpen((prev) => !prev);
-};
+  // 🔒 Handle Cart Access
+  const handleCartClick = () => {
+    if (!isLoggedIn) {
+      router.push(`/auth?returnTo=${pathName}`);
+      return;
+    }
+    setIsCartOpen((prev) => !prev);
+  };
 
   // const wishlistCount = useSelector((state: RootState) => state.wishlist.items.length);
 
@@ -132,9 +132,9 @@ const handleCartClick = () => {
 
 
 
-  React.useEffect(() => {
-    getCart(wixClient)
-  }, [wixClient, getCart])
+  // React.useEffect(() => {
+  //   getCart(wixClient)
+  // }, [wixClient, getCart])
 
   return (
     <AppBar position="static" sx={{ backgroundColor: '#ffffff', color: 'black' }}>
@@ -232,7 +232,7 @@ const handleCartClick = () => {
             {pages.map((page) => (
               <MenuItem key={page.label} onClick={handleCloseNavMenu}>
                 <Link href={page.path} passHref>
-                  <Typography textAlign="center" sx={{fontWeight:'bolder', fontSize:'18px'}}>{page.label}</Typography>
+                  <Typography textAlign="center" sx={{ fontWeight: 'bolder', fontSize: '18px' }}>{page.label}</Typography>
                 </Link>
               </MenuItem>
             ))}
@@ -248,13 +248,13 @@ const handleCartClick = () => {
 
           {/* Icons */}
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            
-              <IconButton size="large" color="inherit" onClick={handleWishlistClick}>
-                {/* <Badge badgeContent={wishlistCount} color='error'> */}
-                <FavoriteIcon sx={{ color: 'black' }} />
-                {/* </Badge> */}
-              </IconButton>
-          
+
+            <IconButton size="large" color="inherit" onClick={handleWishlistClick}>
+              {/* <Badge badgeContent={wishlistCount} color='error'> */}
+              <FavoriteIcon sx={{ color: 'black' }} />
+              {/* </Badge> */}
+            </IconButton>
+
 
             <IconButton size="large" color="inherit"
               onClick={handleCartClick}>

@@ -1,10 +1,12 @@
 import { OAuthStrategy, createClient } from "@wix/sdk";
 import { collections, products } from "@wix/stores";
-import { orders } from "@wix/ecom";
+import { currentCart, orders } from "@wix/ecom";
 import nookies from "nookies";
 
 
-export const wixClientServer  = (ctx?: any) => {
+import type { NextPageContext } from "next";
+
+export const wixClientServer = (ctx?: NextPageContext | null) => {
   let refreshToken;
 
   try {
@@ -18,8 +20,9 @@ export const wixClientServer  = (ctx?: any) => {
     modules: {
       products,
       collections,
+      currentCart,
       orders
-      
+
     },
     auth: OAuthStrategy({
       clientId: process.env.NEXT_PUBLIC_WIX_CLIENT_ID!,

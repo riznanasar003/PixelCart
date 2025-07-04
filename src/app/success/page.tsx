@@ -6,27 +6,27 @@ import Confetti from 'react-confetti'
 
 const SuccessPage = () => {
 
-    const searchParams = useSearchParams()
-    const router = useRouter()
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const sessionId = searchParams.get("session_id");
 
-    const orderId = searchParams.get("orderId");
-
-    useEffect(()=>{
-       if(!orderId) return;
-
-    const timer = setTimeout(()=>{
-        router.push("/orders/" +orderId)
-    },4000)
-
-
-    return () =>{
-        clearTimeout(timer)
+  useEffect(() => {
+    if (!sessionId) {
+      // No session_id found, redirect to home or show error
+      router.push("/");
+      return;
     }
-},[orderId, router])
 
+    // Optional: auto redirect to orders page after 3s
+    const timeout = setTimeout(() => {
+      router.push("/orders");
+    }, 3000);
+
+    return () => clearTimeout(timeout);
+  }, [sessionId, router]);
 
   return (
-   <div style={{
+    <div style={{
       height: "100vh",
       display: "flex",
       flexDirection: "column",
