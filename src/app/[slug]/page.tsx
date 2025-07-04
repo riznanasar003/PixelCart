@@ -44,7 +44,18 @@ const SinglePage = async ({ params }: { params: { slug: string } }) => {
     >
 
       <Box sx={{ width: '100%', maxWidth: 450, maxheight: 250 }}>
-        <ProductImage items={product.media?.items ?? []} />
+        <ProductImage
+          items={
+            (product.media?.items ?? [])
+              .filter((item): item is { _id: string; image: { url: string } } =>
+                !!item._id && !!item.image?.url
+              )
+              .map(item => ({
+                _id: item._id!,
+                image: { url: item.image!.url }
+              }))
+          }
+        />
       </Box>
 
       <Box flex="1" minWidth={300}>
