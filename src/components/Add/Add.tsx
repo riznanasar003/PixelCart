@@ -1,8 +1,10 @@
 "use client"
-import { useCartStore } from '@/hooks/useCartStore';
-import { useWixClient } from '@/hooks/useWixClient';
+import React from 'react';
+import { useCartStore } from '../../hooks/useCartStore';
+import { useWixClient } from '../../hooks/useWixClient';
 import { Box, Button, ButtonGroup, Typography } from '@mui/material'
 import { useState } from 'react'
+import { useRouter } from 'next/navigation';
 
 const Add = ({ productId, variantId, stockNumber }: {
   productId: string;
@@ -10,14 +12,14 @@ const Add = ({ productId, variantId, stockNumber }: {
   stockNumber: number;
 }) => {
   const [quantity, setQuantity] = useState(1)
-
-  const stock = 4
+  const router = useRouter()
+  
 
   const handleQuantity = (type: "i" | "d") => {
     if (type === 'd' && quantity > 1) {
       setQuantity((prev) => prev - 1)
     }
-    if (type === 'i' && quantity < stock) {
+    if (type === 'i' && quantity < stockNumber) {
       setQuantity((prev) => prev + 1)
     }
 
@@ -73,14 +75,17 @@ const Add = ({ productId, variantId, stockNumber }: {
           <Button
             size="small"
             variant="outlined"
+            disabled={stockNumber < 1}
             onClick={async () => {
               const isLoggedIn = await wixClient.auth.loggedIn();
 
               if (!isLoggedIn) {
                 const currentPath = window.location.pathname;
-                window.location.href = `/login?returnTo=${currentPath}`;
+                router.push(`/login?returnTo=${currentPath}`);
                 return;
               }
+
+              if (stockNumber < 1) return;
 
               addItem(wixClient, productId, variantId, quantity);
             }}

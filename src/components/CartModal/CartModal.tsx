@@ -1,6 +1,7 @@
 "use client";
-import { useCartStore } from '@/hooks/useCartStore';
-import { useWixClient } from '@/hooks/useWixClient';
+import React from 'react';
+import { useCartStore } from '../../hooks/useCartStore';
+import { useWixClient } from '../../hooks/useWixClient';
 import { Box, Button, Paper, Typography } from '@mui/material';
 import { media as wixMedia } from "@wix/sdk"
 import { useRouter } from 'next/navigation';
@@ -48,7 +49,7 @@ const CartModal = () => {
                 <Typography variant='h6'>Shopping Cart</Typography>
             </Box>
 
-            {!cart.lineItems ? (
+            {!cart.lineItems || cart.lineItems.length === 0 ? (
                 <Typography variant='h6' color='error' sx={{ px: 2, py: 1, textAlign: 'center' }}>
                     Cart is Empty
                 </Typography>
@@ -58,7 +59,7 @@ const CartModal = () => {
                         sx={{
                             overflowY: 'auto',
                             px: 2,
-                            flex: 1, // Takes available vertical space in the Paper
+                            flex: 1, 
                         }}
                     >
                         {cart.lineItems.map((item) => (

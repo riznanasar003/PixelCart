@@ -2,7 +2,7 @@
 import { Box, Button, IconButton, Tooltip, Typography } from '@mui/material'
 import { products } from '@wix/stores';
 import React, { useEffect, useState } from 'react'
-import Add from '@/components/Add';
+import Add from '@/components/Add/Add';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/app/redux/store';
 import { addToWishlist, removeFromWishlist } from '@/app/redux/slices/wishlistSlice';
@@ -31,30 +31,30 @@ const CustomizedProducts = ({
   const [selectedOptions, setSelectedOptions] = useState<{ [key: string]: string }>({})
   const [selectedVariant, setSelectedVariant] = useState<products.Variant>();
 
-const wixClient = useWixClient();
-const router = useRouter();
-const pathname = usePathname();
+  const wixClient = useWixClient();
+  const router = useRouter();
+  const pathname = usePathname();
 
-const toggleWishlist = async () => {
-  const loggedIn = await wixClient.auth.loggedIn();
+  const toggleWishlist = async () => {
+    const loggedIn = await wixClient.auth.loggedIn();
 
-  if (!loggedIn) {
-    router.push(`/login?returnTo=${pathname}`);
-    return;
-  }
+    if (!loggedIn) {
+      router.push(`/login?returnTo=${pathname}`);
+      return;
+    }
 
-  if (isWishlisted) {
-    dispatch(removeFromWishlist(productId));
-  } else {
-    dispatch(addToWishlist({
-      id: productId,
-      title: productTitle,
-      image: productImage,
-      description: productDescription,
-      price: productPrice,
-    }));
-  }
-};
+    if (isWishlisted) {
+      dispatch(removeFromWishlist(productId));
+    } else {
+      dispatch(addToWishlist({
+        id: productId,
+        title: productTitle,
+        image: productImage,
+        description: productDescription,
+        price: productPrice,
+      }));
+    }
+  };
 
 
   useEffect(() => {

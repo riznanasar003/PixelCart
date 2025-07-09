@@ -19,7 +19,7 @@ import Badge from '@mui/material/Badge';
 import AdbIcon from '@mui/icons-material/Adb';
 import { usePathname, useRouter } from 'next/navigation';
 import { ShoppingCart } from '@mui/icons-material';
-import CartModal from './CartModal';
+import CartModal from './CartModal/CartModal';
 import { useWixClient } from '@/hooks/useWixClient';
 // import Cookies from 'js-cookie';
 import { useCartStore } from '@/hooks/useCartStore';
@@ -31,7 +31,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 const pages = [
   { label: 'HOMEPAGE', path: '/' },
   { label: 'ORDERS', path: '/orders' },
-  { label: 'CONTACT', path: '/contact' },
+  { label: 'CART', path: '/cart' },
 ];
 // const settings = ['Profile', 'Logout'];
 

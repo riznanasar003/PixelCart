@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 import { Box, Button, Card, CardContent, Divider, Typography } from '@mui/material';
 import { useCartStore } from '@/hooks/useCartStore';
 import { useRouter } from 'next/navigation';
@@ -23,7 +24,7 @@ const CartPage = () => {
   }
 
   const subtotal = cart?.lineItems?.reduce((acc, item) => {
-  const price = parseFloat(item?.price?.amount || '0'); // Convert string to number
+  const price = parseFloat(item?.price?.amount || '0'); 
   const quantity = item?.quantity || 1;
   return acc + price * quantity;
 }, 0) || 0;

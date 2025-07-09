@@ -4,6 +4,7 @@ import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // localStorage
 import { combineReducers } from "@reduxjs/toolkit";
 
+
 const persistConfig = {
   key: "root",
   storage,

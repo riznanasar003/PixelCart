@@ -1,5 +1,5 @@
 "use client"
-
+import React from "react"
 import CategoryList from "@/components/CategoryList"
 import ProductList from "@/components/ProductList"
 import Slider from "@/components/Slider"

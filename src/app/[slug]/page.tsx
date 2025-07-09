@@ -1,5 +1,5 @@
 
-import Add from '@/components/Add';
+import Add from '@/components/Add/Add';
 import CustomizedProducts from '@/components/CustomizedProducts';
 import ProductImage from '@/components/ProductImage';
 import { wixClientServer } from '@/lib/wixClientServer';
@@ -26,13 +26,9 @@ const SinglePage = async ({ params }: PageProps) => {
   const product = products.items[0]
   console.log(product.productOptions)
 
-  
-
-
-
   type AdditionalInfoSection = {
-    title?:string;
-    description?:string
+    title?: string;
+    description?: string
   };
 
   return (
@@ -97,9 +93,6 @@ const SinglePage = async ({ params }: PageProps) => {
             </>
           )}
         </Box>
-
-
-
         <Divider sx={{ my: 2, borderBottomWidth: 1 }} />
         <Box>
           {product.variants && product.productOptions ? (
@@ -121,7 +114,6 @@ const SinglePage = async ({ params }: PageProps) => {
                 variantId="00000000-0000-0000-0000-000000000000"
                 stockNumber={product.stock?.quantity || 0}
               />
-
             </Box>
           )}
         </Box>
@@ -130,10 +122,8 @@ const SinglePage = async ({ params }: PageProps) => {
             <Divider sx={{ my: 2 }} />
             <Typography variant='h6' sx={{ fontWeight: "bold" }}>{section.title}</Typography>
             <Typography variant='subtitle2' sx={{ textAlign: "justify" }}>{section.description}</Typography>
-
           </Box>
-        ))
-        }
+        ))}
       </Box>
     </Box>
   );
