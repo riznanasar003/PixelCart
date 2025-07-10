@@ -1,8 +1,8 @@
 "use client"
 import React from "react"
-import CategoryList from "@/components/CategoryList"
+import CategoryList from "@/components/CategoryList/CategoryList"
 import ProductList from "@/components/ProductList"
-import Slider from "@/components/Slider"
+import Slider from "@/components/Slider/Slider"
 import { Box, Typography } from "@mui/material"
 import { Suspense } from "react"
 

@@ -92,9 +92,7 @@ const Slider = () => {
                             
                                 <Button variant="contained"
                                 onClick={handleBuyNow}
-                                sx={{ backgroundColor: "black", color: "white", fontFamily:"serif", borderRadius:"24px", padding:"10px 30px" }}>
-                                    SHOP NOW
-                                </Button>
+                                sx={{ backgroundColor: "black", color: "white", fontFamily:"serif", borderRadius:"24px", padding:"10px 30px" }}>SHOP NOW</Button>
                           
                         </Box>
                         <Box
@@ -131,6 +129,7 @@ const Slider = () => {
                 {slides.map((_, index) => (
                     <Box
                         key={index}
+                        data-testid="dot"
                         onClick={() => setCurrent(index)}
                         sx={{
                             width: 12,

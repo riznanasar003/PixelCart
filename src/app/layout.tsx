@@ -1,8 +1,8 @@
 import React from "react";
 import type { Metadata } from "next";
 import "./globals.css";
-import Footer from "@/components/Footer";
-import ClientNavbar from "@/components/ClientNavbar";
+import Footer from "@/components/Footer/Footer";
+import ClientNavbar from "@/components/ClientNavbar/ClientNavbar";
 import Theme from "./Theme/theme";
 import { WixClientContextProvider } from "@/context/wixContext";
 import ReduxProvider from "./redux/ReduxProvider";

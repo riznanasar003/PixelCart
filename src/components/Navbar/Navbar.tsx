@@ -11,7 +11,6 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
-// import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import Container from '@mui/material/Container';
@@ -19,21 +18,18 @@ import Badge from '@mui/material/Badge';
 import AdbIcon from '@mui/icons-material/Adb';
 import { usePathname, useRouter } from 'next/navigation';
 import { ShoppingCart } from '@mui/icons-material';
-import CartModal from './CartModal/CartModal';
+import CartModal from '../CartModal/CartModal';
 import { useWixClient } from '@/hooks/useWixClient';
-// import Cookies from 'js-cookie';
 import { useCartStore } from '@/hooks/useCartStore';
 import Link from 'next/link';
 import FavoriteIcon from '@mui/icons-material/Favorite';
-// import { useSelector } from 'react-redux';
-// import { RootState } from '@/app/redux/store';
 
 const pages = [
   { label: 'HOMEPAGE', path: '/' },
   { label: 'ORDERS', path: '/orders' },
   { label: 'CART', path: '/cart' },
 ];
-// const settings = ['Profile', 'Logout'];
+
 
 // Styled Search Components
 const Search = styled('div')(({ theme }) => ({
@@ -79,9 +75,9 @@ const Navbar = () => {
   const handleCloseNavMenu = () => setAnchorElNav(null);
   const handleCloseUserMenu = () => setAnchorElUser(null);
 
-  // const [, setIsProfileOpen] = React.useState(false)
+
   const [isCartOpen, setIsCartOpen] = React.useState(false)
-  // const [isLoading, setIsLoading] = React.useState(false)
+
 
   const wixClient = useWixClient()
   const router = useRouter()
@@ -89,7 +85,6 @@ const Navbar = () => {
 
   const isLoggedIn = wixClient.auth.loggedIn();
 
-  // 🔒 Handle Wishlist Access
   const handleWishlistClick = () => {
     if (!isLoggedIn) {
       router.push(`/auth?returnTo=${pathName}`);
@@ -98,7 +93,6 @@ const Navbar = () => {
     router.push('/wishlist');
   };
 
-  // 🔒 Handle Cart Access
   const handleCartClick = () => {
     if (!isLoggedIn) {
       router.push(`/auth?returnTo=${pathName}`);
@@ -107,34 +101,10 @@ const Navbar = () => {
     setIsCartOpen((prev) => !prev);
   };
 
-  // const wishlistCount = useSelector((state: RootState) => state.wishlist.items.length);
 
-  // const handleProfileClick = () => {
-  //   handleCloseUserMenu();
-  //   if (!isLoggedIn) {
-  //     router.push('/login')
-  //   } else {
-  //     setIsProfileOpen((prev) => !prev)
-  //   }
-  // }
-
-
-  // const handleLogout = async () => {
-  //   setIsLoading(true)
-  //   Cookies.remove("refreshToken")
-  //   const { logoutUrl } = await wixClient.auth.logout(window.location.href);
-  //   setIsLoading(false)
-  //   setIsProfileOpen(false)
-  //   router.push(logoutUrl)
-  // }
 
   const { counter } = useCartStore()
 
-
-
-  // React.useEffect(() => {
-  //   getCart(wixClient)
-  // }, [wixClient, getCart])
 
   return (
     <AppBar position="static" sx={{ backgroundColor: '#ffffff', color: 'black' }}>
@@ -207,25 +177,7 @@ const Navbar = () => {
           </Box>
 
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href="#"
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'serif',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
 
-            }}
-          >
-            PIXELCART
-          </Typography>
 
           {/* Nav Buttons */}
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex', gap: '10' } }}>
@@ -249,7 +201,7 @@ const Navbar = () => {
           {/* Icons */}
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
 
-            <IconButton size="large" color="inherit" onClick={handleWishlistClick}>
+            <IconButton size="large" color="inherit" data-testid="wishlist-button" onClick={handleWishlistClick}>
               {/* <Badge badgeContent={wishlistCount} color='error'> */}
               <FavoriteIcon sx={{ color: 'black' }} />
               {/* </Badge> */}
@@ -282,23 +234,6 @@ const Navbar = () => {
               anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
               transformOrigin={{ vertical: 'top', horizontal: 'right' }}
             >
-              {/* {settings.map((setting) => (
-                <MenuItem
-                  key={setting}
-                  onClick={() => {
-                    if (setting === 'Logout') {
-                      handleLogout();
-                    } else if (setting === 'Profile') {
-                      router.push('/profile');
-                    }
-                    handleCloseUserMenu(); // closes the menu after click
-                  }}
-                >
-                  <Typography textAlign="center" fontFamily="serif">
-                    {setting === 'Logout' ? (isLoading ? 'Logging out...' : 'Logout') : setting}
-                  </Typography>
-                </MenuItem>
-              ))} */}
             </Menu>
 
           </Box>

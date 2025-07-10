@@ -7,8 +7,12 @@ import { Box, Divider, Typography } from '@mui/material';
 import { notFound } from 'next/navigation';
 import React from 'react';
 
+type slugType = {
+  slug: string;
+}
+
 type PageProps = {
-  params: { slug: string };
+  params: slugType;
 };
 
 const SinglePage = async ({ params }: PageProps) => {

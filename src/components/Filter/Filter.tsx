@@ -95,7 +95,7 @@ const Filter = () => {
                 </Box>
                 <Box sx={{ minWidth: 120 }}>
                     <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label" sx={{ fontFamily: 'serif' }}>Sort By</InputLabel>
+                        <InputLabel id="sort-select-label" sx={{ fontFamily: 'serif' }}>Sort By</InputLabel>
                         <Select
                             labelId="sort-select-label"
                             id="sort-select"

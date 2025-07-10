@@ -1,4 +1,4 @@
-import Filter from '@/components/Filter'
+import Filter from '@/components/Filter/Filter'
 import ProductList from '@/components/ProductList'
 import { wixClientServer } from '@/lib/wixClientServer'
 import { Box, Button, Typography } from '@mui/material'
