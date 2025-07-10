@@ -7,11 +7,12 @@ import { Box, Divider, Typography } from '@mui/material';
 import { notFound } from 'next/navigation';
 import React from 'react';
 
-interface PageProps {
-  params: { slug: string };
-}
 
-const SinglePage = async ({ params }: PageProps) => {
+const SinglePage = async ({
+  params,
+}: {
+  params: { slug: string };
+}) => {
   console.log(params.slug)
   const wixClient = wixClientServer();
   const products = await wixClient.products
