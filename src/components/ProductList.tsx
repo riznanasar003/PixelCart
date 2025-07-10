@@ -81,7 +81,7 @@ const ProductList = async ({
       <Grid container spacing={4}>
         {res.items.map((product: products.Product) => (
           <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={product._id} >
-            <Link href={`/${product.slug}`} style={{ textDecoration: 'none' }}>
+            <Link href={`/product?product=${product.slug}`} style={{ textDecoration: 'none' }}>
               <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                 <Box
                   sx={{

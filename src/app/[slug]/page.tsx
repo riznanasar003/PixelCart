@@ -9,8 +9,8 @@ import SlugComponent from '@/components/SlugComponent/SlugComponent';
 import React from 'react';
 
 
-const SinglePage = async ({ params }: { params: { slug: string } }) => {
-  return <SlugComponent slug={params.slug} />;
+const SinglePage = async () => {
+  return <SlugComponent />;
 };
 
 export default SinglePage;

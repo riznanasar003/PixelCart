@@ -1,32 +1,36 @@
-// 'use client'
+'use client';
 
 import { Box, Divider, Typography } from '@mui/material';
-import React from 'react'
+import React, { useEffect, useState } from 'react';
 import Add from '../Add/Add';
 import CustomizedProducts from '../CustomizedProducts';
 import ProductImage from '../ProductImage';
+import { useSearchParams } from 'next/navigation';
 import { wixClientServer } from '@/lib/wixClientServer';
-import { notFound } from 'next/navigation';
 
-type paramsType = {
-    slug: string;
-}
-const SlugComponent = async (props: paramsType) => {
-    const params = props.slug
-    console.log(params)
-    const wixClient = await wixClientServer();
-    const products = await wixClient.products.queryProducts().eq("slug", params).find();
-    console.log(products.items)
-    if (!products.items[0]) {
-        return notFound()
-    }
+const SlugComponent = () => {
+    const searchParams = useSearchParams();
+    const slug = searchParams.get('product');
+    const [product, setProduct] = useState<any | null>(null);
+    console.log(slug)
+    useEffect(() => {
+        const fetchProduct = async () => {
+            if (!slug) return;
+            const wixClient =  wixClientServer(); 
+            const products = await wixClient.products.queryProducts().eq('slug', slug).find();
+            if (products.items.length > 0) {
+                setProduct(products.items[0]);
+            }
+        };
 
-    const product = products.items[0]
-    console.log(product.productOptions)
+        fetchProduct();
+    }, [slug]);
+
+    if (!product) return <div>Loading...</div>;
 
     type AdditionalInfoSection = {
         title?: string;
-        description?: string
+        description?: string;
     };
 
     return (
@@ -40,17 +44,17 @@ const SlugComponent = async (props: paramsType) => {
                 justifyContent: 'center',
             }}
         >
-
-            <Box sx={{ width: '100%', maxWidth: 450, maxheight: 250 }}>
+            <Box sx={{ width: '100%', maxWidth: 450 }}>
                 <ProductImage
                     items={
                         (product.media?.items ?? [])
-                            .filter((item): item is { _id: string; image: { url: string } } =>
-                                !!item._id && !!item.image?.url
+                            .filter(
+                                (item): item is { _id: string; image: { url: string } } =>
+                                    !!item._id && !!item.image?.url
                             )
-                            .map(item => ({
+                            .map((item) => ({
                                 _id: item._id!,
-                                image: { url: item.image!.url }
+                                image: { url: item.image!.url },
                             }))
                     }
                 />
@@ -69,13 +73,12 @@ const SlugComponent = async (props: paramsType) => {
                     {product.description}
                 </Typography>
 
-
                 <Divider sx={{ my: 2, borderBottomWidth: 1 }} />
 
                 <Box display="flex" gap={2} alignItems="center">
                     {product.price?.price === product.price?.discountedPrice ? (
                         <Typography variant="h6" fontWeight="medium">
-                            $ {product.price?.price}
+                            ${product.price?.price}
                         </Typography>
                     ) : (
                         <>
@@ -83,48 +86,53 @@ const SlugComponent = async (props: paramsType) => {
                                 variant="h6"
                                 sx={{ textDecoration: 'line-through', color: 'gray' }}
                             >
-                                $ {product.price?.price}
+                                ${product.price?.price}
                             </Typography>
                             <Typography variant="h6" fontWeight="bold">
-                                $ {product.price?.discountedPrice}
+                                ${product.price?.discountedPrice}
                             </Typography>
                         </>
                     )}
                 </Box>
+
                 <Divider sx={{ my: 2, borderBottomWidth: 1 }} />
+
                 <Box>
                     {product.variants && product.productOptions ? (
                         <CustomizedProducts
                             productId={product._id!}
-                            productTitle={product.name || ""}
-                            productImage={product.media?.items?.[0]?.image?.url || ""}
-                            productDescription={product.description || ""}
+                            productTitle={product.name || ''}
+                            productImage={product.media?.items?.[0]?.image?.url || ''}
+                            productDescription={product.description || ''}
                             productPrice={product.price?.discountedPrice || 0}
                             variants={product.variants}
                             productOptions={product.productOptions}
                         />
-
                     ) : (
-
                         <Box sx={{ mt: 2 }}>
                             <Add
-                                productId={product._id || ""}
+                                productId={product._id || ''}
                                 variantId="00000000-0000-0000-0000-000000000000"
                                 stockNumber={product.stock?.quantity || 0}
                             />
                         </Box>
                     )}
                 </Box>
+
                 {product.additionalInfoSections?.map((section: AdditionalInfoSection) => (
                     <Box key={section.title}>
                         <Divider sx={{ my: 2 }} />
-                        <Typography variant='h6' sx={{ fontWeight: "bold" }}>{section.title}</Typography>
-                        <Typography variant='subtitle2' sx={{ textAlign: "justify" }}>{section.description}</Typography>
+                        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                            {section.title}
+                        </Typography>
+                        <Typography variant="subtitle2" sx={{ textAlign: 'justify' }}>
+                            {section.description}
+                        </Typography>
                     </Box>
                 ))}
             </Box>
         </Box>
     );
-}
+};
 
-export default SlugComponent
+export default SlugComponent;
