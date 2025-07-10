@@ -11,7 +11,7 @@ import DOMPurify from 'isomorphic-dompurify';
 
 const PRODUCT_PER_PAGE = 8
 
-type SearchParams = {
+export type SearchParams = {
   name?: string;
   type?: string;
   min?: string;
