@@ -7,17 +7,13 @@ import { Box, Divider, Typography } from '@mui/material';
 import { notFound } from 'next/navigation';
 import React from 'react';
 
-type slugType = {
-  slug: string;
+interface PageProps {
+  params: { slug: string };
 }
-
-type PageProps = {
-  params: slugType;
-};
 
 const SinglePage = async ({ params }: PageProps) => {
   console.log(params.slug)
-  const wixClient = await wixClientServer();
+  const wixClient = wixClientServer();
   const products = await wixClient.products
     .queryProducts()
     .eq("slug", params.slug)
