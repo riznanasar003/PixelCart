@@ -9,14 +9,14 @@ const ListPage = async ({
   searchParams,
 }: {
   searchParams?: {
-    name?: string;
-    type?: string;
-    min?: string;
-    max?: string;
-    sort?: string;
-    page?: string;
-    cat?: string;
-    [key: string]: string | string[] | undefined;
+    name: string,
+    type: string,
+    min: string,
+    max: string,
+    sort: string,
+    page: string,
+    cat: string,
+    [key: string]: string | string[] | undefined
   };
 }) => {
   const catSlug = searchParams?.cat || "all-products";
@@ -65,7 +65,7 @@ const ListPage = async ({
         py  :'20px'
       }}>{cat?.collection?.name} For You !</Typography>
       <Suspense fallback={"loading..."}>
-      <ProductList categoryId={cat.collection?._id || "00000000-000000-000000-000000000001"} 
+      <ProductList limit={8} categoryId={cat.collection?._id || "00000000-000000-000000-000000000001"} 
       searchParams={searchParams}/>
       </Suspense>
     </Box>
