@@ -5,12 +5,12 @@ import { Box, Button, Typography } from '@mui/material'
 import Image from 'next/image'
 import React, { Suspense } from 'react'
 
-const ListPage = async ({
-  searchParams,
-}: {
-  searchParams: Record<string, string | string[] | undefined>;
-}) => {
-  const catSlug = typeof searchParams.cat === 'string' ? searchParams.cat : 'all-products';
+interface ListPageProps {
+  searchParams?: { [key: string]: string | string[] | undefined };
+}
+
+const ListPage = async ({ searchParams }: ListPageProps) => {
+  const catSlug = typeof searchParams?.cat === 'string' ? searchParams.cat : 'all-products';
 
   const wixClient = await wixClientServer();
   const cat = await wixClient.collections.getCollectionBySlug(catSlug);
