@@ -121,12 +121,7 @@ const LoginPageClient = () => {
                     setError("Something went wrong.");
             }
         } catch (err) {
-            console.error("Error during authentication:", err);
-            if (err instanceof Error) {
-                setError(err.message);
-            } else {
-                setError("An unexpected error occurred. Please try again.");
-            }
+            setError(err instanceof Error ? err.message : "Unknown error");
         } finally {
             setIsLoading(false);
         }

@@ -1,9 +1,13 @@
 import Filter from '@/components/Filter/Filter';
-import ProductList from '@/components/ProductList';
 import { wixClientServer } from '@/lib/wixClientServer';
 import { Box, Button, Typography } from '@mui/material';
 import Image from 'next/image';
 import React, { Suspense } from 'react';
+import dynamic from 'next/dynamic';
+
+const ProductListWrapper = dynamic(() => import('./ProductListWrapper'), {
+  ssr: false, // optional: prevents hydration mismatch errors for `useSearchParams`
+});
 
 const ListPage = async () => {
   const catSlug = "all-products";
@@ -60,7 +64,10 @@ const ListPage = async () => {
       </Typography>
 
       <Suspense fallback={<Typography sx={{ px: 4, py: 8 }}>Loading products...</Typography>}>
-        <ProductList limit={8} categoryId={cat.collection?._id || "00000000-0000-0000-0000-000000000001"} />
+        <ProductListWrapper
+          limit={8}
+          categoryId={cat.collection?._id || "00000000-0000-0000-0000-000000000001"}
+        />
       </Suspense>
     </Box>
   );
