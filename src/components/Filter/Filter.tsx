@@ -1,55 +1,53 @@
-"use client";
-import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material'
+'use client';
+
+import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import React from 'react'
+import React from 'react';
 
 const Filter = () => {
-
     const pathname = usePathname();
-    const searchParams = useSearchParams()
-    const { replace } = useRouter()
+    const searchParams = useSearchParams();
+    const router = useRouter();
 
+    const updateQueryParam = (key: string, value: string) => {
+        const params = new URLSearchParams(searchParams.toString());
+        if (value) {
+            params.set(key, value);
+        } else {
+            params.delete(key);
+        }
+        router.replace(`${pathname}?${params.toString()}`);
+    };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        const params = new URLSearchParams(searchParams);
-        params.set(name, value);
-        replace(`${pathname}?${params.toString()}`);
+        updateQueryParam(e.target.name, e.target.value);
     };
 
     const handleSelectChange = (e: SelectChangeEvent) => {
-        const { name, value } = e.target;
-        const params = new URLSearchParams(searchParams);
-        params.set(name, value);
-        replace(`${pathname}?${params.toString()}`);
+        updateQueryParam(e.target.name, e.target.value);
     };
 
-
     return (
-        <Box sx={{
-            mt: 4,
-            display: 'flex',
-            justifyContent: 'flex-end',
-            px: 6,
-
-
-        }}>
-            <Box sx={{
-                display: 'flex',
-                gap: 6,
-                alignItems: "flex-end",
-                justifyContent: "flex-end"
-
-            }}
-                flexWrap={'wrap'}>
+        <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end', px: 6 }}>
+            <Box
+                sx={{
+                    display: 'flex',
+                    gap: 6,
+                    alignItems: 'flex-end',
+                    justifyContent: 'flex-end',
+                    flexWrap: 'wrap'
+                }}
+            >
+                {/* Type Filter */}
                 <Box sx={{ minWidth: 120 }}>
                     <FormControl fullWidth>
-                        <InputLabel id="demo-simple-select-label" sx={{ fontFamily: 'serif' }} >Type</InputLabel>
+                        <InputLabel id="type-label" sx={{ fontFamily: 'serif' }}>Type</InputLabel>
                         <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            name='type'
-                            label='Type'
+                            labelId="type-label"
+                            id="type"
+                            name="type"
+                            label="Type"
+                            value={searchParams.get('type') || ''}
                             onChange={handleSelectChange}
                             sx={{ fontFamily: "serif", borderRadius: "40px" }}
                         >
@@ -58,51 +56,44 @@ const Filter = () => {
                         </Select>
                     </FormControl>
                 </Box>
-                <Box
-                    component="form"
-                    noValidate
-                    autoComplete="off"
-                    sx={{
-                        width: 120,
-                        borderRadius: "40px",
-                    }}
-                >
+
+                {/* Min Price */}
+                <Box sx={{ width: 120 }}>
                     <TextField
-                        id="outlined-basic"
-                        label="min price"
-                        variant="outlined"
-                        name='min'
+                        label="Min Price"
+                        name="min"
+                        value={searchParams.get("min") || ''}
                         onChange={handleInputChange}
-                        fullWidth slotProps={{ input: { sx: { borderRadius: "40px" } } }} />
+                        fullWidth
+                        variant="outlined"
+                        sx={{ borderRadius: "40px" }}
+                    />
                 </Box>
 
-                <Box
-                    component="form"
-                    noValidate
-                    autoComplete="off"
-                    sx={{
-                        width: 120,
-                        borderRadius: "40px",
-                    }}
-                >
+                {/* Max Price */}
+                <Box sx={{ width: 120 }}>
                     <TextField
-                        id="outlined-basic"
-                        label="max price"
-                        variant="outlined"
-                        name='max'
+                        label="Max Price"
+                        name="max"
+                        value={searchParams.get("max") || ''}
                         onChange={handleInputChange}
-                        fullWidth slotProps={{ input: { sx: { borderRadius: "40px", fontFamily: "serif" } } }} />
+                        fullWidth
+                        variant="outlined"
+                        sx={{ borderRadius: "40px" }}
+                    />
                 </Box>
-                <Box sx={{ minWidth: 120 }}>
+
+                {/* Sort Filter */}
+                <Box sx={{ minWidth: 160 }}>
                     <FormControl fullWidth>
-                        <InputLabel id="sort-select-label" sx={{ fontFamily: 'serif' }}>Sort By</InputLabel>
+                        <InputLabel id="sort-label" sx={{ fontFamily: 'serif' }}>Sort By</InputLabel>
                         <Select
-                            labelId="sort-select-label"
-                            id="sort-select"
-                            label="Sort By"
+                            labelId="sort-label"
+                            id="sort"
                             name="sort"
+                            label="Sort By"
+                            value={searchParams.get('sort') || ''}
                             onChange={handleSelectChange}
-                            value={searchParams.get("sort") || ""}
                             sx={{ fontFamily: "serif", borderRadius: "40px" }}
                         >
                             <MenuItem value="asc price">Price (low to high)</MenuItem>
@@ -110,12 +101,11 @@ const Filter = () => {
                             <MenuItem value="asc lastUpdated">Newest</MenuItem>
                             <MenuItem value="desc lastUpdated">Oldest</MenuItem>
                         </Select>
-
                     </FormControl>
                 </Box>
             </Box>
         </Box>
-    )
-}
+    );
+};
 
-export default Filter
+export default Filter;

@@ -1,4 +1,4 @@
-"use client"
+// "use client"
 import React from "react"
 import CategoryList from "@/components/CategoryList/CategoryList"
 import ProductList from "@/components/ProductList"
