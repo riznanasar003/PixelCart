@@ -1,6 +1,6 @@
 // /app/auth/page.tsx
 import LoginForm from '@/components/LoginForm';
-import { Suspense } from 'react';
+import React, { Suspense } from 'react';
 
 export default function AuthPage() {
   return (
