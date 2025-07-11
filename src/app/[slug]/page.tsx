@@ -6,11 +6,13 @@
 // import { Box, Divider, Typography } from '@mui/material';
 // import { notFound } from 'next/navigation';
 import SlugComponent from '@/components/SlugComponent/SlugComponent';
-import React from 'react';
+import React, { Suspense } from 'react';
 
 
 const SinglePage = async () => {
-  return <SlugComponent />;
+  return <Suspense>
+    <SlugComponent />;
+  </Suspense>
 };
 
 export default SinglePage;

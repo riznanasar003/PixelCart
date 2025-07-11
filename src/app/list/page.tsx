@@ -19,53 +19,54 @@ const ListPage = async () => {
   return (
     <Box>
       {/* Hero Banner */}
-      <Box
-        sx={{
-          display: { xs: 'none', sm: 'flex' },
-          justifyContent: 'space-between',
-          backgroundColor: "#ffe4e6",
-          px: 4,
-          height: 300,
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
+      <Suspense fallback={<Typography sx={{ px: 4, py: 8 }}>Loading products...</Typography>}>
         <Box
           sx={{
-            width: "66.666%",
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            gap: 4
+            display: { xs: 'none', sm: 'flex' },
+            justifyContent: 'space-between',
+            backgroundColor: "#ffe4e6",
+            px: 4,
+            height: 300,
+            position: 'relative',
+            overflow: 'hidden',
           }}
         >
-          <Typography variant='h4' fontFamily='serif' fontWeight={600} textAlign='center'>
-            Grab Upto 50% off on <br />Selected Products
-          </Typography>
-          <Button
-            variant='contained'
+          <Box
             sx={{
-              borderRadius: '24px',
-              px: 3,
-              py: 1.5,
-              backgroundColor: 'black',
-              fontFamily: 'serif'
+              width: "66.666%",
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: 4
             }}
           >
-            Buy Now
-          </Button>
+            <Typography variant='h4' fontFamily='serif' fontWeight={600} textAlign='center'>
+              Grab Upto 50% off on <br />Selected Products
+            </Typography>
+            <Button
+              variant='contained'
+              sx={{
+                borderRadius: '24px',
+                px: 3,
+                py: 1.5,
+                backgroundColor: 'black',
+                fontFamily: 'serif'
+              }}
+            >
+              Buy Now
+            </Button>
+          </Box>
+          <Image src='/woman.png' alt='woman' width={300} height={300} style={{ objectFit: 'contain' }} />
         </Box>
-        <Image src='/woman.png' alt='woman' width={300} height={300} style={{ objectFit: 'contain' }} />
-      </Box>
 
-      <Filter />
+        <Filter />
 
-      <Typography variant='h4' fontFamily='serif' sx={{ px: '20px', py: '20px' }}>
-        {cat?.collection?.name || 'Products'} For You!
-      </Typography>
+        <Typography variant='h4' fontFamily='serif' sx={{ px: '20px', py: '20px' }}>
+          {cat?.collection?.name || 'Products'} For You!
+        </Typography>
 
-      <Suspense fallback={<Typography sx={{ px: 4, py: 8 }}>Loading products...</Typography>}>
+
         <ProductList
           limit={8}
           categoryId={cat.collection?._id || "00000000-0000-0000-0000-000000000001"}
